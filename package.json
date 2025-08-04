@@ -1,0 +1,39 @@
+﻿{
+  "name": "mind-map-server",
+  "version": "1.0.0",
+  "description": "思维导图MCP服务器 - 将Markdown转换为PNG格式的思维导图",
+  "main": "mind_map_server.py",
+  "scripts": {
+    "install-deps": "npm install -g @markmap/cli",
+    "test": "npx markmap-cli --version",
+    "dev": "python mind_map_server.py",
+    "docker:build": "docker build -t mind-map-mcp .",
+    "docker:run": "docker run -p 8090:8090 mind-map-mcp"
+  },
+  "keywords": [
+    "mindmap",
+    "思维导图",
+    "mcp",
+    "markdown",
+    "png",
+    "visualization",
+    "可视化"
+  ],
+  "author": "Mind Map MCP Server",
+  "license": "MIT",
+  "dependencies": {
+    "@markmap/cli": "^0.15.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "bugs": {
+    "url": "./issues"
+  },
+  "homepage": "."
+}

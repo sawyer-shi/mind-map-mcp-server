@@ -1,0 +1,88 @@
+﻿# Docker Compose閰嶇疆鏂囦欢
+# =======================
+# 杩欎釜鏂囦欢璁╀綘鑳藉鐢ㄤ竴涓畝鍗曠殑鍛戒护灏卞惎鍔ㄦ暣涓湇鍔?
+# 灏卞儚鏄竴涓?涓€閿惎鍔?鎸夐挳
+
+version: '3.8'
+
+services:
+  # 鎬濈淮瀵煎浘鏈嶅姟
+  mind-map-server:
+    # 鏋勫缓璁剧疆
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    # 瀹瑰櫒鍚嶇О
+    container_name: mind-map-mcp-server
+    
+    # 绔彛鏄犲皠锛氬皢瀹瑰櫒鐨?090绔彛鏄犲皠鍒颁富鏈虹殑8090绔彛
+    ports:
+      - "8090:8090"
+    
+    # 鏂囦欢澶规槧灏勶細璁╁鍣ㄨ兘澶熻闂富鏈虹殑鏂囦欢
+    volumes:
+      # 杈撳嚭鐩綍 - 鐢熸垚鐨凱NG鍥剧墖浼氫繚瀛樺湪杩欓噷
+      - ./output:/app/output
+      # 涓存椂鐩綍 - 澶勭悊杩囩▼涓殑涓存椂鏂囦欢
+      - ./temp:/app/temp
+      # 绀轰緥鐩綍 - 瀛樻斁绀轰緥鏂囦欢
+      - ./examples:/app/examples
+    
+    # 鐜鍙橀噺
+    environment:
+      - RUNNING_IN_DOCKER=true
+      - PYTHONUNBUFFERED=1
+      - MCP_SERVER_NAME=mind-map-server
+      - MCP_SERVER_VERSION=1.0.0
+    
+    # 閲嶅惎绛栫暐锛氬鏋滄湇鍔℃剰澶栧仠姝紝鑷姩閲嶅惎
+    restart: unless-stopped
+    
+    # 鍋ュ悍妫€鏌?
+    healthcheck:
+      test: ["CMD", "python", "-c", "print('鍋ュ悍妫€鏌ラ€氳繃')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # 璧勬簮闄愬埗锛氶槻姝㈡湇鍔″崰鐢ㄨ繃澶氱郴缁熻祫婧?
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'      # 鏈€澶氫娇鐢?涓狢PU鏍稿績
+          memory: 2G       # 鏈€澶氫娇鐢?GB鍐呭瓨
+        reservations:
+          cpus: '0.5'      # 鑷冲皯淇濈暀0.5涓狢PU鏍稿績
+          memory: 512M     # 鑷冲皯淇濈暀512MB鍐呭瓨
+
+# 缃戠粶閰嶇疆
+networks:
+  default:
+    name: mind-map-network
+    driver: bridge
+
+# 鏁版嵁鍗烽厤缃?
+volumes:
+  output-data:
+    driver: local
+  temp-data:
+    driver: local
+
+# 浣跨敤璇存槑锛?
+# 
+# 1. 鍚姩鏈嶅姟锛?
+#    docker-compose up -d
+# 
+# 2. 鏌ョ湅鏃ュ織锛?
+#    docker-compose logs -f
+# 
+# 3. 鍋滄鏈嶅姟锛?
+#    docker-compose down
+# 
+# 4. 閲嶆柊鏋勫缓骞跺惎鍔細
+#    docker-compose up --build -d
+# 
+# 5. 杩涘叆瀹瑰櫒璋冭瘯锛?
+#    docker-compose exec mind-map-server bash
