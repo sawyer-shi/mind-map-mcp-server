@@ -48,7 +48,7 @@
    docker-compose up -d
    ```
 
-就这么简单！服务会在 http://localhost:8090 启动。
+就这么简单！服务会在 http://localhost:8091 启动。
 
 ## 如何使用
 
@@ -76,7 +76,7 @@
 
 #### Dify中使用
 1. 在Dify中添加MCP服务
-2. 配置服务地址: http://localhost:8090/mcp
+2. 配置服务地址: http://localhost:8091/mcp
 3. 在聊天中直接使用思维导图功能
 
 #### CherryStudio中使用
@@ -113,13 +113,13 @@
 ### 常见问题
 
 **Q: 服务启动失败？**
-A: 检查端口8090是否被占用，可以修改docker-compose.yml中的端口配置
+A: 检查端口8091是否被占用，可以修改docker-compose.yml中的端口配置
 
 **Q: 生成的图片中文显示异常？**
 A: 服务已内置中文字体支持，如仍有问题请检查Docker容器日志
 
 **Q: 连接超时？**
-A: 确认服务已启动，防火墙没有阻止8090端口
+A: 确认服务已启动，防火墙没有阻止8091端口
 
 **Q: 图片质量不满意？**
 A: 可以通过API参数调整图片尺寸和质量
@@ -144,7 +144,7 @@ DEBUG=true docker-compose up -d
 ### API接口
 服务提供REST API接口，可以直接调用：
 ```bash
-curl -X POST http://localhost:8090/mcp \
+curl -X POST http://localhost:8091/mcp \
   -H "Content-Type: application/json" \
   -d '{"method": "create_mind_map", "params": {"content": "# 我的想法\n## 子想法"}}'
 ```

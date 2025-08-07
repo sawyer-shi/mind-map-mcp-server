@@ -1,21 +1,27 @@
-﻿# 思维导图MCP服务器的Python依赖
-# =====================================
+# Mind Map MCP Server Python Dependencies | 思维导图MCP服务器的Python依赖
+# =====================================================
 
-# MCP协议支持 - 让我们的服务能够按照MCP标准工作
-mcp>=1.0.0
+# MCP protocol support with multiple transports | MCP协议支持（包含多种传输方式）
+# Includes stdio and streamable-http transports | 包含stdio和streamable-http传输
+mcp[cli]>=1.12.0
 
-# 浏览器自动化工具 - 用来将HTML页面转换为PNG图片
+# Browser automation for HTML to PNG conversion | 浏览器自动化工具（HTML转PNG）
 playwright>=1.40.0
 
-# 异步编程支持 - 让服务运行更高效
-asyncio-mqtt>=0.13.0
-
-# HTTP MCP服务器支持
+# Web server support for HTTP transports | Web服务器支持（用于HTTP传输）
 fastapi>=0.104.0
-uvicorn>=0.24.0
+uvicorn[standard]>=0.24.0
 
-# 文件处理工具
-pathlib2>=2.3.7
+# Additional MCP transport dependencies | 额外的MCP传输依赖
+# WebSocket support for advanced MCP features | WebSocket支持（用于高级MCP功能）
+websockets>=12.0
+
+# Type checking and validation | 类型检查和验证
+pydantic>=2.0.0
+typing-extensions>=4.8.0
+
+# Configuration management | 配置管理
+python-dotenv>=1.0.0
 
 # JSON处理（Python内置，这里列出来让你知道会用到）
 # json - 内置模块

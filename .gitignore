@@ -1,12 +1,15 @@
-# 思维导图MCP服务器 - Git忽略文件
-# =====================================
-# 这个文件告诉Git哪些文件不需要上传到代码仓库
+﻿# Environment variables | 鐜鍙橀噺
+.env
+.env.local
+.env.*.local
 
-# Python相关
+# Python cache | Python缂撳瓨
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+
+# Distribution / packaging | 鍒嗗彂/鎵撳寘
 .Python
 build/
 develop-eggs/
@@ -27,8 +30,52 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# 虚拟环境
-.env
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs | 瀹夎鏃ュ織
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports | 鍗曞厓娴嬭瘯/瑕嗙洊鐜囨姤鍛?
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments | 鐜
 .venv
 env/
 venv/
@@ -36,14 +83,53 @@ ENV/
 env.bak/
 venv.bak/
 
-# IDE相关
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Node.js dependencies | Node.js渚濊禆
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data | 杩愯鏃舵暟鎹?
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Logs | 鏃ュ織鏂囦欢
+logs/
+*.log
+
+# Temporary files | 涓存椂鏂囦欢
+temp/
+tmp/
+*.tmp
+*.temp
+
+# Output files | 杈撳嚭鏂囦欢
+output/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.html
+
+# IDE files | IDE鏂囦欢
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# 操作系统相关
+# OS generated files | 鎿嶄綔绯荤粺鐢熸垚鐨勬枃浠?
 .DS_Store
 .DS_Store?
 ._*
@@ -52,49 +138,14 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# Node.js相关
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.npm
-.eslintcache
+# Docker
+.dockerignore
 
-# 临时文件和输出文件
-temp/
-*.tmp
-*.temp
-*.log
+# Playwright
+.playwright/
 
-# 测试相关
-.coverage
-.pytest_cache/
-.tox/
-.coverage.*
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-
-# Jupyter相关
-.ipynb_checkpoints
-
-# Docker相关（可选，如果你想保留Docker文件就注释掉）
-# Dockerfile
-# docker-compose.yml
-
-# 密钥和配置文件
-*.key
-*.pem
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# 输出文件（生成的图片）
-# 注意：如果你想保留示例输出图片，可以注释掉下面这行
-# output/*.png
-
-# Playwright相关
-playwright-report/
-test-results/
+# Local test files | 鏈湴娴嬭瘯鏂囦欢
+test_*.py
+*_test.py
+test/
+tests/

@@ -51,8 +51,8 @@ docker-compose up -d
 ```
 
 2. **Access URLs**:
-   - HTTP MCP Endpoint: `http://localhost:8090/mcp`
-   - Service Status: `http://localhost:8090`
+   - HTTP MCP Endpoint: `http://localhost:8091/mcp`
+   - Service Status: `http://localhost:8091`
 
 3. **Check service status**:
 ```bash
@@ -86,7 +86,7 @@ python mind_map_server.py
 {
   "mcpServers": {
     "mind-map-server": {
-      "url": "http://localhost:8090/mcp"
+      "url": "http://localhost:8091/mcp"
     }
   }
 }
@@ -128,16 +128,18 @@ python mind_map_server.py
 ```
 mind-map-mcp-server/
 ├── README.md                 # 📖 Project documentation
-├── mind_map_server.py        # 🧠 Main MCP server (stdio)
-├── http_server.py           # 🌐 HTTP MCP server
+├── mind_map_server.py        # 🧠 Main MCP server (supports stdio & streamable-http)
 ├── start_server.py          # ⚙️ Auto-install startup script
+├── start_streamable.py      # 🌐 Streamable HTTP startup script
 ├── quick_start.py           # 🚀 User-friendly startup interface
 ├── requirements.txt         # 🐍 Python dependencies
 ├── package.json            # 📦 Node.js dependencies  
 ├── Dockerfile              # 🐳 Docker build file
 ├── docker-compose.yml      # 🚢 Docker orchestration
+├── env.template            # ⚙️ Environment configuration template
 ├── temp/                   # 📂 Temporary files
 ├── output/                 # 🖼️ Generated images
+├── logs/                   # 📝 Log files
 └── examples/               # 📋 Usage examples
 ```
 
@@ -273,8 +275,8 @@ docker-compose up -d
 ```
 
 2. **访问地址**：
-   - HTTP MCP端点：`http://localhost:8090/mcp`
-   - 服务状态：`http://localhost:8090`
+   - HTTP MCP端点：`http://localhost:8091/mcp`
+   - 服务状态：`http://localhost:8091`
 
 3. **查看服务状态**：
 ```bash
@@ -308,7 +310,7 @@ python mind_map_server.py
 {
   "mcpServers": {
     "mind-map-server": {
-      "url": "http://localhost:8090/mcp"
+      "url": "http://localhost:8091/mcp"
     }
   }
 }
@@ -350,16 +352,18 @@ python mind_map_server.py
 ```
 mind-map-mcp-server/
 ├── README.md                 # 📖 项目文档
-├── mind_map_server.py        # 🧠 主MCP服务器（stdio）
-├── http_server.py           # 🌐 HTTP MCP服务器
+├── mind_map_server.py        # 🧠 主MCP服务器（支持stdio和streamable-http）
 ├── start_server.py          # ⚙️ 自动安装启动脚本
+├── start_streamable.py      # 🌐 流式HTTP启动脚本
 ├── quick_start.py           # 🚀 用户友好的启动界面
 ├── requirements.txt         # 🐍 Python依赖
 ├── package.json            # 📦 Node.js依赖  
 ├── Dockerfile              # 🐳 Docker构建文件
 ├── docker-compose.yml      # 🚢 Docker编排
+├── env.template            # ⚙️ 环境配置模板
 ├── temp/                   # 📂 临时文件
 ├── output/                 # 🖼️ 生成的图片
+├── logs/                   # 📝 日志文件
 └── examples/               # 📋 使用示例
 ```
 
@@ -452,7 +456,7 @@ A: 完全支持！包括中文、日文、阿拉伯语等所有Unicode字符。
 - 💾 PNG图片保存在output目录 | PNG images saved in output directory
 - 🧹 临时文件自动清理 | Temporary files auto-cleaned
 - 🖥️ 支持Windows、Mac、Linux | Cross-platform support
-- 🚪 默认端口：8090 | Default port: 8090
+- 🚪 默认端口：8091 | Default port: 8091
 
 ## 📄 License | 许可证
 
