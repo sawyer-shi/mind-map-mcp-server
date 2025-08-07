@@ -1,7 +1,12 @@
-# 思维导图MCP服务器的Docker配置文件
-# =====================================
-# 这个文件告诉Docker如何创建一个包含我们服务的容器
-# 就像是一个安装指南，让任何人都能轻松运行我们的服务
+# Multi-transport Mind Map MCP Server | 多传输思维导图MCP服务器
+# ================================================================
+# This Docker image supports two MCP transport protocols:
+# - stdio: For local tools and IDEs
+# - streamablehttp: For modern web applications with streaming HTTP
+#
+# 该Docker镜像支持两种MCP传输协议：
+# - stdio: 用于本地工具和IDE
+# - streamablehttp: 用于现代Web应用程序（流式HTTP）
 
 # 第一步：选择基础环境
 # 我们使用包含Python和Node.js的镜像，这样就不用分别安装了
@@ -40,7 +45,10 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt ./
 
 # 第五步：安装Python依赖
-RUN pip install --no-cache-dir -r requirements.txt
+# 使用官方PyPI源
+# RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# RUN pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
+RUN pip install --no-cache-dir --timeout 300 --retries 3 -r requirements.txt
 
 # 第六步：安装Node.js依赖
 RUN npm install -g markmap-cli
@@ -62,8 +70,9 @@ RUN mkdir -p temp output examples
 RUN chmod +x mind_map_server.py
 
 # 第十一步：暴露端口
-# 告诉Docker这个容器需要使用8090端口
-EXPOSE 8090
+# 告诉Docker这个容器需要使用的端口
+# 8000: FastMCP default port | FastMCP默认端口
+EXPOSE 8000
 
 # 第十二步：设置环境变量
 # 告诉程序在Docker环境中运行
@@ -76,15 +85,26 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import subprocess; subprocess.run(['python', '--version'])" || exit 1
 
 # 第十四步：启动命令
-# 告诉Docker如何启动我们的HTTP MCP服务
-CMD ["python", "http_server.py"]
+# Default command runs stdio mode | 默认命令运行stdio模式
+# Can be overridden via docker run command | 可通过docker run命令覆盖
+CMD ["python", "mind_map_server.py", "stdio"]
 
-# 构建说明：
-# 要构建这个Docker镜像，请在项目根目录运行：
-# docker build -t mind-map-mcp .
+# 构建和运行说明 | Build and Run Instructions:
+# ==============================================
 #
-# 要运行容器，请使用：
-# docker run -p 8090:8090 -v $(pwd)/output:/app/output mind-map-mcp
+# 构建镜像 | Build image:
+# docker build -t mind-map-mcp-unified .
 #
-# 这里的 -v $(pwd)/output:/app/output 会将容器内的output目录
-# 映射到你电脑上的output目录，这样生成的图片就能保存到你的电脑上
+# 运行不同传输模式 | Run different transport modes:
+#
+# 1. stdio模式 | stdio mode:
+# docker run -it --rm -v $(pwd)/output:/app/output mind-map-mcp-unified
+#
+# 2. Streamable HTTP模式 | Streamable HTTP mode:
+# docker run -p 8091:8091 -v $(pwd)/output:/app/output mind-map-mcp-unified python mind_map_server.py streamable-http --host 0.0.0.0
+#
+# 3. Streamable HTTP模式 | Streamable HTTP mode:
+# docker run -p 8091:8091 -v $(pwd)/output:/app/output mind-map-mcp-unified python mind_map_server_unified.py streamable-http --host 0.0.0.0
+#
+# 映射说明 | Volume mapping:
+# -v $(pwd)/output:/app/output 将生成的图片保存到本地output目录
