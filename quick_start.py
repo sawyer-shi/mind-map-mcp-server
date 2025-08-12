@@ -70,7 +70,7 @@ def docker_start_all_transports():
     print("   Including stdio and streamable-http protocols")
     print()
     
-    # Check if Docker is installed | 检查Docker is否安装
+    # Check if Docker is installed | 检查Docker是否安装
     if not _check_docker():
         return False
     
@@ -108,7 +108,7 @@ def docker_start_web_only():
     print("   Streamable HTTP protocol only")
     print()
     
-    # Check if Docker is installed | 检查Docker is否安装
+    # Check if Docker is installed | 检查Docker是否安装
     if not _check_docker():
         return False
     
@@ -241,9 +241,9 @@ def local_start_with_transport():
     
     try:
         if transport == 'stdio':
-            subprocess.run([sys.executable, 'mind_map_server.py', 'stdio'])
+            subprocess.run([sys.executable, 'main.py', 'stdio'])
         elif transport == 'streamable':
-            subprocess.run([sys.executable, 'mind_map_server.py', 'streamable-http'])
+            subprocess.run([sys.executable, 'main.py', 'streamable-http'])
     except KeyboardInterrupt:
         print(f"\n⏹️  {transport.upper()} server stopped by user")
     except Exception as e:
@@ -482,9 +482,14 @@ def show_project_info():
     print("   • 🌐 Support multiple languages including Chinese")
     print()
     print("📁 Project Files:")
-    print("   • mind_map_server.py - Main server (stdio mode)")
-    print("   • http_server.py - HTTP server")
-    print("   • start_server.py - Auto-install script")
+    print("   • main.py - Main entry point (modular architecture)")
+    print("   • src/ - Source code modules")
+    print("   •   ├── server.py - Main server class")
+    print("   •   ├── mind_map_generator.py - Mind map generation logic")
+    print("   •   ├── mcp_tools.py - MCP tool definitions")
+    print("   •   └── utils.py - Utility functions")
+    print("   • start_server.py - Auto-install startup script")
+    print("   • quick_start.py - User-friendly startup interface")
     print("   • examples/ - Usage examples")
     print("   • temp/ - Temporary files directory")
     print("   • output/ - Generated images directory")
