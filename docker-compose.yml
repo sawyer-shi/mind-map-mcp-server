@@ -1,18 +1,18 @@
-﻿# Mind Map MCP Server - Multi-Transport Support | 思维导图MCP服务器- 澶氫紶杈撴敮鎸?# ====================================================================
-# This compose file supports two MCP transport protocols:
+﻿# Mind Map MCP Server - Docker Compose Configuration
+# ====================================================================
+# This compose file supports multiple MCP transport protocols and services:
 # - stdio: For local tools and command-line integrations
-# - streamablehttp: For modern web applications with streaming HTTP
+# - streamable-http: For modern web applications with streaming HTTP
+# - static-server: For serving generated mind map files
 #
-# 璇ョ紪鎺掓枃浠舵敮鎸佷袱绉峂CP浼犺緭协议）# - stdio: 鐢ㄤ簬鏈湴宸ュ叿鍜屽懡浠よ闆嗘垚
-# - streamablehttp: 鐢ㄤ簬鐜颁唬Web应用程序锛堟祦寮廐TTP）#
-# Configuration | 配置:
+# Configuration:
 # Copy env.template to .env and customize your settings
-# 灏唀nv.template澶嶅埗不env骞惰嚜瀹氫箟鎮ㄧ殑设置
+
+version: '3.8'
 
 services:
-  # Stdio Transport Service | Stdio浼犺緭服务
+  # Stdio Transport Service
   # Best for local tools and command-line integrations
-  # 鏈€閫傚悎鏈湴宸ュ叿鍜屽懡浠よ闆嗘垚
   mind-map-stdio:
     build:
       context: .
@@ -38,9 +38,8 @@ services:
     profiles:
       - stdio  # Only start with --profile stdio
 
-  # Streamable HTTP Transport Service | 娴佸紡HTTP浼犺緭服务
+  # Streamable HTTP Transport Service
   # Modern HTTP streaming protocol for web applications
-  # 鐢ㄤ簬Web应用程序鐨勭幇浠TTP娴佸紡协议
   mind-map-streamable:
     build:
       context: .
@@ -74,9 +73,8 @@ services:
       retries: ${HEALTH_CHECK_RETRIES:-3}
       start_period: ${HEALTH_CHECK_START_PERIOD:-40s}
 
-  # Static File Server Service | 静态文件服务器服务
+  # Static File Server Service
   # Serves generated mind map files over HTTP
-  # 通过HTTP提供生成的思维导图文件
   mind-map-static:
     build:
       context: .
@@ -107,15 +105,14 @@ services:
       retries: ${HEALTH_CHECK_RETRIES:-3}
       start_period: ${HEALTH_CHECK_START_PERIOD:-40s}
 
-
-# Network Configuration | 网络配置
+# Network Configuration
 networks:
   mind-map-network:
     driver: bridge
     
-# 鍗峰畾涔夛紙鍙€夛級
+# Volume Definitions (Optional)
 volumes:
-  # 鎸佷箙鍖栨暟鎹嵎 | Persistent data volumes
+  # Persistent data volumes
   mind-map-temp:
     driver: local
   mind-map-output:
@@ -123,58 +120,62 @@ volumes:
   mind-map-logs:
     driver: local
 
-# Usage Examples | 浣跨敤绀轰緥
+# Usage Examples
 # ============================
 #
-# Setup Configuration | 设置配置:
+# Setup Configuration:
 #   cp env.template .env
-#   # Edit .env file to customize settings | 编辑.env文件鑷畾涔夎缃?#
-# Start all web transport services | 鍚姩所鏈塛eb浼犺緭服务:
+#   # Edit .env file to customize settings
+#
+# Start all web transport services:
 #   docker-compose up -d
 #
-# Start all transports including stdio | 鍚姩鍖呮嫭stdio鍦ㄥ唴鐨勬墍鏈変紶杈撴湇鍔?
+# Start all transports including stdio:
 #   docker-compose --profile stdio up -d
 #
-# Start specific services | 鍚姩鐗瑰畾服务:
+# Start specific services:
 #   docker-compose up -d mind-map-streamable          # Streamable HTTP only
 #   docker-compose --profile stdio up -d mind-map-stdio  # Stdio interactive mode
 #
-# Test stdio mode interactively | 浜や簰寮忔祴璇晄tdio妯″紡:
+# Test stdio mode interactively:
 #   docker-compose --profile stdio run --rm mind-map-stdio
 #
-# View specific service logs | 鏌ョ湅鐗瑰畾服务日志:
+# View specific service logs:
 #   docker-compose logs -f mind-map-streamable
 #   docker-compose --profile stdio logs -f mind-map-stdio
 #
-# Rebuild and restart | 閲嶆柊鏋勫缓骞堕噸同
+# Rebuild and restart:
 #   docker-compose up --build -d
 #
-# Stop all services | 停止所鏈夋湇鍔?
+# Stop all services:
 #   docker-compose down
 #   docker-compose --profile stdio down  # Include stdio
 #
-# Custom Configuration Examples | 鑷畾涔夐厤缃ず渚?
+# Custom Configuration Examples:
 # 
-# Method 1: Environment variables | 方法1锛氱幆澧冨彉閲?#   STREAMABLE_PORT=8081 docker-compose up -d
+# Method 1: Environment variables
+#   STREAMABLE_PORT=8081 docker-compose up -d
 #   DEBUG=true HOST=127.0.0.1 docker-compose up -d
 #
-# Method 2: .env file (recommended) | 方法2）env文件锛堟帹鑽愶級
-#   # Edit .env file with your settings | 在env文件涓紪杈戞偍鐨勮缃?#   STREAMABLE_PORT=3091
+# Method 2: .env file (recommended)
+#   # Edit .env file with your settings
+#   STREAMABLE_PORT=3091
 #   HOST=127.0.0.1
 #   DEBUG=true
 #
-# Configuration Variables | 配置变量:
+# Configuration Variables:
 # See env.template for complete list of configurable options
-# 瀹屾暣鐨勫彲配置閫夐」鍒楄〃璇峰弬瑙乪nv.template
 #
-# Key variables | 涓昏变量:
-# - HOST: 服务鍣ㄧ粦瀹氬湴鍧€ | Server bind address (default: 0.0.0.0)
-# - STREAMABLE_PORT: 娴佸紡HTTP绔彛 | Streamable HTTP port (default: 8091)  
-# - DEBUG: 调试妯″紡 | Debug mode (default: false)
-# - HOST_TEMP_PATH: 涓存椂文件鐩綍 | Temp files directory (default: ./temp)
-# - HOST_OUTPUT_PATH: 输出文件鐩綍 | Output files directory (default: ./output)
-# - HOST_LOG_PATH: 日志文件鐩綍 | Log files directory (default: ./logs)
+# Key variables:
+# - HOST: Server bind address (default: 0.0.0.0)
+# - STREAMABLE_PORT: Streamable HTTP port (default: 8091)  
+# - STATIC_FILE_PORT: Static file server port (default: 8090)
+# - DEBUG: Debug mode (default: false)
+# - HOST_TEMP_PATH: Temp files directory (default: ./temp)
+# - HOST_OUTPUT_PATH: Output files directory (default: ./output)
+# - HOST_LOG_PATH: Log files directory (default: ./logs)
 #
-# Service Endpoints | 服务绔偣:
+# Service Endpoints:
 # - Stdio Transport: Interactive command-line interface
 # - Streamable HTTP: http://${HOST}:${STREAMABLE_PORT}/mcp (default: http://localhost:8091/mcp)
+# - Static Files: http://${HOST}:${STATIC_FILE_PORT}/output (default: http://localhost:8090/output)
