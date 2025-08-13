@@ -37,21 +37,51 @@ def fix_chinese_fonts_and_remove_watermark(html_file: Path):
         with open(html_file, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Inject Chinese font support and minimal watermark removal | 注入中文字体支持和最小化水印移除
+        # Inject Chinese font support and high-quality rendering | 注入中文字体支持和高质量渲染
         font_css_and_watermark_removal = """
         <style>
-        /* Chinese font support | 中文字体支持 */
+        /* High-quality Chinese font support | 高质量中文字体支持 */
         * {
             font-family: 'Noto Sans CJK SC', 'Microsoft YaHei', '微软雅黑', 
                          'WenQuanYi Zen Hei', '文泉驿正黑', 'SimHei', '黑体',
                          'Arial', 'Helvetica', sans-serif !important;
         }
         
-        /* Improve Chinese text rendering | 改善中文文本渲染 */
+        /* Optimize text rendering for high-DPI displays | 为高DPI显示优化文本渲染 */
         text {
             font-weight: normal;
             text-rendering: optimizeLegibility;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.1px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-variant-ligatures: normal;
+            font-feature-settings: "kern" 1;
+        }
+        
+        /* Improve SVG text quality | 改善SVG文本质量 */
+        svg text {
+            shape-rendering: geometricPrecision;
+            text-rendering: optimizeLegibility;
+            font-smooth: always;
+            -webkit-font-smoothing: subpixel-antialiased;
+        }
+        
+        /* Ensure crisp lines and shapes | 确保线条和形状清晰 */
+        svg {
+            shape-rendering: geometricPrecision;
+        }
+        
+        svg path, svg line, svg circle, svg rect {
+            shape-rendering: geometricPrecision;
+            stroke-width: 1px;
+        }
+        
+        /* Optimize for high-resolution displays | 为高分辨率显示优化 */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            text {
+                font-weight: 300;
+                letter-spacing: 0.05px;
+            }
         }
         </style>
         
@@ -115,6 +145,145 @@ def fix_chinese_fonts_and_remove_watermark(html_file: Path):
         
     except Exception as e:
         print(f"Error fixing Chinese fonts in {html_file}: {e}")
+
+
+def analyze_content_complexity(markdown_content: str) -> dict:
+    """
+    Analyze Markdown content complexity to determine optimal rendering parameters
+    分析Markdown内容复杂度以确定最佳渲染参数
+    
+    Args:
+        markdown_content: The Markdown content to analyze
+        
+    Returns:
+        dict: Complexity analysis results with recommended viewport settings
+    """
+    lines = markdown_content.strip().split('\n')
+    
+    # Count different elements | 统计不同元素
+    headers = 0
+    list_items = 0
+    max_depth = 0
+    current_depth = 0
+    total_text_length = 0
+    long_lines = 0
+    
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+            
+        # Count headers | 统计标题
+        if line.startswith('#'):
+            headers += 1
+            header_level = len(line.split()[0])  # Count # symbols
+            max_depth = max(max_depth, header_level)
+            
+        # Count list items | 统计列表项
+        elif line.startswith(('- ', '* ', '+ ')) or line.lstrip().startswith(('- ', '* ', '+ ')):
+            list_items += 1
+            # Calculate indentation depth | 计算缩进深度
+            indent = len(line) - len(line.lstrip())
+            current_depth = indent // 2  # Assuming 2 spaces per level
+            max_depth = max(max_depth, current_depth + 1)
+            
+        # Count numbered lists | 统计编号列表
+        elif re.match(r'^\s*\d+\.', line):
+            list_items += 1
+            indent = len(line) - len(line.lstrip())
+            current_depth = indent // 2
+            max_depth = max(max_depth, current_depth + 1)
+            
+        # Track text length | 跟踪文本长度
+        text_length = len(line)
+        total_text_length += text_length
+        if text_length > 100:  # Long lines need more space
+            long_lines += 1
+    
+    # Calculate complexity score | 计算复杂度分数
+    complexity_score = (
+        headers * 2 +           # Headers contribute to structure
+        list_items * 1.5 +      # List items add content
+        max_depth * 3 +         # Depth increases complexity significantly  
+        long_lines * 2 +        # Long lines need more space
+        (total_text_length / 100)  # Overall content amount
+    )
+    
+    # Determine complexity level | 确定复杂度级别
+    if complexity_score < 20:
+        level = "low"
+    elif complexity_score < 50:
+        level = "medium"  
+    elif complexity_score < 100:
+        level = "high"
+    else:
+        level = "ultra"
+    
+    return {
+        "complexity_score": complexity_score,
+        "complexity_level": level,
+        "headers": headers,
+        "list_items": list_items,
+        "max_depth": max_depth,
+        "total_text_length": total_text_length,
+        "long_lines": long_lines,
+        "recommended_scale": min(1.0 + (complexity_score / 50), 2.5)  # Scale factor 1.0-2.5
+    }
+
+
+def calculate_optimal_viewport(complexity_analysis: dict, base_width: int, base_height: int, 
+                             max_width: int, max_height: int) -> dict:
+    """
+    Calculate optimal viewport dimensions based on content complexity
+    根据内容复杂度计算最佳视口尺寸
+    
+    Args:
+        complexity_analysis: Result from analyze_content_complexity
+        base_width, base_height: Base viewport dimensions
+        max_width, max_height: Maximum allowed dimensions
+        
+    Returns:
+        dict: Optimal viewport settings
+    """
+    scale = complexity_analysis["recommended_scale"]
+    level = complexity_analysis["complexity_level"]
+    
+    # Calculate dimensions based on complexity | 根据复杂度计算尺寸
+    if level == "low":
+        width = base_width
+        height = base_height
+    elif level == "medium":
+        width = int(base_width * 1.2)
+        height = int(base_height * 1.1)
+    elif level == "high":
+        width = int(base_width * 1.5)
+        height = int(base_height * 1.3)
+    else:  # ultra
+        width = int(base_width * 1.8)
+        height = int(base_height * 1.5)
+    
+    # Apply additional scaling for very deep or wide content | 为很深或很宽的内容应用额外缩放
+    depth_factor = min(complexity_analysis["max_depth"] / 5, 1.5)
+    if complexity_analysis["long_lines"] > 5:
+        width = int(width * 1.2)
+    
+    width = int(width * depth_factor)
+    height = int(height * (1 + depth_factor * 0.3))
+    
+    # Ensure we don't exceed maximum dimensions | 确保不超过最大尺寸
+    width = min(width, max_width)
+    height = min(height, max_height)
+    
+    # Ensure minimum dimensions | 确保最小尺寸
+    width = max(width, 800)
+    height = max(height, 600)
+    
+    return {
+        "width": width,
+        "height": height,
+        "scale_factor": scale,
+        "complexity_level": level
+    }
 
 
 def validate_markdown_content(content: str) -> tuple[bool, str]:

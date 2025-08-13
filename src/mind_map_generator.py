@@ -12,8 +12,9 @@ import time
 from pathlib import Path
 from playwright.async_api import async_playwright
 
-from utils import cleanup_temp_files, fix_chinese_fonts_and_remove_watermark
+from utils import cleanup_temp_files, fix_chinese_fonts_and_remove_watermark, analyze_content_complexity, calculate_optimal_viewport
 from storage_manager import StorageManager
+from config import Config
 
 
 class MindMapGenerator:
@@ -34,8 +35,11 @@ class MindMapGenerator:
         
         # Initialize storage manager | 初始化存储管理器
         self.storage_manager = StorageManager(output_dir)
+        
+        # Load configuration | 加载配置
+        self.config = Config()
     
-    async def generate_mind_map(self, markdown_content: str, title: str = "Mind Map") -> dict:
+    async def generate_mind_map(self, markdown_content: str, title: str = "Mind Map", quality: str = None) -> dict:
         """
         Generate mind map from Markdown content | 从Markdown内容生成思维导图
         
@@ -44,6 +48,37 @@ class MindMapGenerator:
         """
         try:
             print(f"Starting mind map generation: {title}")
+            
+            # Use provided quality or fall back to config | 使用提供的质量级别或回退到配置
+            if quality is None:
+                quality = self.config.IMAGE_QUALITY
+            
+            print(f"Image quality level: {quality}")
+            
+            # Adjust device scale factor based on quality | 根据质量调整设备缩放因子
+            quality_scale_factors = {
+                "low": 1.0,
+                "medium": 1.5,
+                "high": 2.0,
+                "ultra": 3.0
+            }
+            device_scale_factor = quality_scale_factors.get(quality, self.config.DEVICE_SCALE_FACTOR)
+            
+            # Analyze content complexity | 分析内容复杂度
+            complexity_analysis = analyze_content_complexity(markdown_content)
+            print(f"Content complexity: {complexity_analysis['complexity_level']} "
+                  f"(score: {complexity_analysis['complexity_score']:.1f})")
+            
+            # Calculate optimal viewport settings | 计算最佳视口设置
+            viewport_settings = calculate_optimal_viewport(
+                complexity_analysis,
+                self.config.BASE_VIEWPORT_WIDTH,
+                self.config.BASE_VIEWPORT_HEIGHT,
+                self.config.MAX_VIEWPORT_WIDTH,
+                self.config.MAX_VIEWPORT_HEIGHT
+            )
+            print(f"Optimal viewport: {viewport_settings['width']}x{viewport_settings['height']} "
+                  f"(complexity: {viewport_settings['complexity_level']})")
             
             # Clean up old temporary files | 清理旧的临时文件
             cleanup_temp_files(self.temp_dir)
@@ -75,14 +110,36 @@ class MindMapGenerator:
             # Fix Chinese fonts and remove watermark | 修复中文字体并移除水印
             fix_chinese_fonts_and_remove_watermark(temp_html_file)
             
-            # Convert HTML to PNG using Playwright | 使用Playwright将HTML转换为PNG
-            print("Converting HTML to PNG...")
+            # Convert HTML to PNG using Playwright with intelligent rendering | 使用Playwright智能渲染转换HTML为PNG
+            print(f"Converting HTML to PNG with {viewport_settings['complexity_level']} quality settings...")
             async with async_playwright() as p:
-                browser = await p.chromium.launch()
-                page = await browser.new_page()
+                # Launch browser with high-quality rendering options | 启动浏览器并设置高质量渲染选项
+                browser = await p.chromium.launch(
+                    headless=True,
+                    args=[
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage',
+                        '--disable-web-security',
+                        '--font-render-hinting=none',  # Better font rendering
+                        '--enable-font-antialiasing',   # Enable font antialiasing
+                        '--force-device-scale-factor=' + str(device_scale_factor),
+                    ]
+                )
                 
-                # Set viewport for better rendering | 设置视口以获得更好的渲染效果
-                await page.set_viewport_size({"width": 1200, "height": 800})
+                # Create page with optimized settings | 创建页面并设置优化参数
+                page = await browser.new_page(
+                    device_scale_factor=device_scale_factor
+                )
+                
+                # Set dynamic viewport based on content complexity | 根据内容复杂度设置动态视口
+                await page.set_viewport_size({
+                    "width": viewport_settings['width'], 
+                    "height": viewport_settings['height']
+                })
+                
+                print(f"Using viewport: {viewport_settings['width']}x{viewport_settings['height']} "
+                      f"with {device_scale_factor}x scale factor (quality: {quality})")
                 
                 # Load HTML file | 加载HTML文件
                 await page.goto(f'file://{temp_html_file.absolute()}')

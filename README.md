@@ -39,11 +39,17 @@ A powerful MCP (Model Context Protocol) server that converts Markdown text into 
 - **Returns**: List of matching mind map images with URLs and metadata
 
 #### 2. `create_mind_map`
-- **Purpose**: Generate watermark-free mind map PNG from Markdown content and save to configured storage
+- **Purpose**: Generate high-quality, watermark-free mind map PNG from Markdown content with intelligent viewport sizing
 - **Parameters**:
   - `markdown_content` (string): Markdown formatted text with hierarchical structure support
   - `title` (string, optional): Mind map title (used as filename)
+  - `quality` (string, optional): Image quality level - 'low', 'medium', 'high', 'ultra' (defaults to 'high')
 - **Returns**: Mind map image URL, storage information, and validation status
+- **Features**: 
+  - 🧠 **Smart Content Analysis**: Automatically analyzes content complexity and adjusts viewport size
+  - 📐 **Dynamic Viewport**: Viewport size scales from 800x600 to 2400x1600 based on content
+  - 🎯 **High-DPI Rendering**: Supports 1x to 3x scale factors for crisp images on any display
+  - ✨ **Quality Levels**: Choose from 4 quality presets for different use cases
 
 ### 🚀 Quick Start
 
@@ -407,11 +413,17 @@ A: Yes! Full Unicode support including Chinese, Japanese, Arabic, etc.
 - **返回**：匹配的思维导图图像列表，包含URL和元数据
 
 #### 2. `create_mind_map`
-- **用途**：根据Markdown内容生成无水印思维导图PNG并保存到配置的存储
+- **用途**：根据Markdown内容生成高质量、无水印思维导图PNG，支持智能视口调整
 - **参数**：
   - `markdown_content` (字符串): 支持分层结构的Markdown格式文本
   - `title` (字符串，可选): 思维导图标题（用作文件名）
+  - `quality` (字符串，可选): 图像质量级别 - 'low'、'medium'、'high'、'ultra'（默认'high'）
 - **返回**：思维导图图像URL、存储信息和验证状态
+- **特色功能**：
+  - 🧠 **智能内容分析**：自动分析内容复杂度并调整视口尺寸
+  - 📐 **动态视口**：视口尺寸根据内容从800x600扩展到2400x1600
+  - 🎯 **高DPI渲染**：支持1倍到3倍缩放因子，在任何显示器上都清晰
+  - ✨ **质量级别**：提供4个质量预设适应不同使用场景
 
 ### 🚀 快速开始
 

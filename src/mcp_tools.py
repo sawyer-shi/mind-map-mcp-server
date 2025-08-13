@@ -31,18 +31,24 @@ class MCPTools:
         return [
             Tool(
                 name="create_mind_map",
-                description="Create a mind map PNG image from Markdown content. Features: watermark-free output, image validation, multi-cloud storage support (local, Aliyun OSS, Huawei OceanStor, MinIO, Amazon S3, Azure Blob, Google Cloud Storage), and returns accessible image URL.",
+                description="Create a high-quality mind map PNG image from Markdown content. Features: intelligent viewport sizing, high-DPI rendering, watermark-free output, image validation, multi-cloud storage support (local, Aliyun OSS, Huawei OceanStor, MinIO, Amazon S3, Azure Blob, Google Cloud Storage), and returns accessible image URL.",
                 inputSchema={
                     "type": "object",
                     "properties": {
                         "markdown_content": {
                             "type": "string",
-                            "description": "Markdown formatted text to convert to mind map. Supports hierarchical structure with # headers, bullet points, and nested lists."
+                            "description": "Markdown formatted text to convert to mind map. Supports hierarchical structure with # headers, bullet points, and nested lists. Complex content will automatically use larger viewport for better clarity."
                         },
                         "title": {
                             "type": "string",
                             "description": "Title for the mind map file (optional, defaults to 'Mind Map'). Used as filename and display title.",
                             "default": "Mind Map"
+                        },
+                        "quality": {
+                            "type": "string",
+                            "description": "Image quality level: 'low', 'medium', 'high', 'ultra'. Defaults to config setting. Higher quality uses larger viewport and higher DPI.",
+                            "enum": ["low", "medium", "high", "ultra"],
+                            "default": "high"
                         }
                     },
                     "required": ["markdown_content"]
@@ -101,6 +107,7 @@ class MCPTools:
         """Handle create_mind_map tool | 处理create_mind_map工具"""
         markdown_content = arguments.get("markdown_content", "")
         title = arguments.get("title", "Mind Map")
+        quality = arguments.get("quality", "high")
         
         # Validate markdown content | 验证markdown内容
         is_valid, error_msg = validate_markdown_content(markdown_content)
@@ -111,7 +118,7 @@ class MCPTools:
             )]
         
         # Generate mind map | 生成思维导图
-        result = await self.generator.generate_mind_map(markdown_content, title)
+        result = await self.generator.generate_mind_map(markdown_content, title, quality)
         
         if result["success"]:
             # Validate mind map URL exists | 验证思维导图URL存在
@@ -268,7 +275,7 @@ class FastMCPTools:
 
         
         @app.tool()
-        async def create_mind_map(markdown_content: str, title: str = "Mind Map") -> dict:
+        async def create_mind_map(markdown_content: str, title: str = "Mind Map", quality: str = "high") -> dict:
             """
             Create a mind map PNG image from Markdown content
             从Markdown内容创建思维导图PNG图片
@@ -279,6 +286,7 @@ class FastMCPTools:
             Args:
                 markdown_content: Markdown formatted text to convert (supports hierarchical structure)
                 title: Title for the mind map file (used as filename and display title)
+                quality: Image quality level ('low', 'medium', 'high', 'ultra')
                 
             Returns:
                 dict: Result with success status, image URL, storage info, and validation details
@@ -291,7 +299,7 @@ class FastMCPTools:
                     "error": error_msg
                 }
             
-            result = await self.generator.generate_mind_map(markdown_content, title)
+            result = await self.generator.generate_mind_map(markdown_content, title, quality)
             
             response = {
                 "success": result["success"],
