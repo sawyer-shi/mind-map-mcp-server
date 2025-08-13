@@ -70,7 +70,7 @@ def docker_start_all_transports():
     print("   Including stdio and streamable-http protocols")
     print()
     
-    # Check if Docker is installed | 检查Docker is否安装
+    # Check if Docker is installed | 检查Docker是否安装
     if not _check_docker():
         return False
     
@@ -108,7 +108,7 @@ def docker_start_web_only():
     print("   Streamable HTTP protocol only")
     print()
     
-    # Check if Docker is installed | 检查Docker is否安装
+    # Check if Docker is installed | 检查Docker是否安装
     if not _check_docker():
         return False
     
@@ -122,10 +122,12 @@ def docker_start_web_only():
             print("✅ Web transport services started successfully!")
             print()
             print("🌐 Service URLs:")
-            print("   • Streamable HTTP: http://localhost:8091/mcp")  
+            print("   • MCP Server: http://localhost:8091/mcp")  
+            print("   • Static Files: http://localhost:8090/output")
             print()
             print("📋 Common Commands:")
-            print("   • View HTTP logs: docker-compose logs -f mind-map-streamable")
+            print("   • View MCP logs: docker-compose logs -f mind-map-streamable")
+            print("   • View static server logs: docker-compose logs -f mind-map-static")
             print("   • Stop services: docker-compose down")
             return True
         else:
@@ -241,9 +243,9 @@ def local_start_with_transport():
     
     try:
         if transport == 'stdio':
-            subprocess.run([sys.executable, 'mind_map_server.py', 'stdio'])
+            subprocess.run([sys.executable, 'main.py', 'stdio'])
         elif transport == 'streamable':
-            subprocess.run([sys.executable, 'mind_map_server.py', 'streamable-http'])
+            subprocess.run([sys.executable, 'main.py', 'streamable-http'])
     except KeyboardInterrupt:
         print(f"\n⏹️  {transport.upper()} server stopped by user")
     except Exception as e:
@@ -476,18 +478,30 @@ def show_project_info():
     print()
     print("✨ Main Features:")
     print("   • 📝 Convert Markdown text to mind maps")
-    print("   • 🖼️ Generate high-quality PNG images")
-    print("   • 🐳 Support Docker one-click deployment")
-    print("   • 🔌 Full MCP protocol support")
+    print("   • 🖼️ Generate high-quality PNG images (watermark-free)")
+    print("   • ☁️ Multi-cloud storage support (Local, Aliyun OSS, AWS S3, Azure, GCS, etc.)")
+    print("   • 🔍 Smart image listing by date and name filtering")
+    print("   • 🐳 Support Docker one-click deployment (RECOMMENDED)")
+    print("   • 🔌 Full MCP protocol support with optimized responses")
     print("   • 🌐 Support multiple languages including Chinese")
+    print("   • ✅ Advanced image validation and error handling")
     print()
     print("📁 Project Files:")
-    print("   • mind_map_server.py - Main server (stdio mode)")
-    print("   • http_server.py - HTTP server")
-    print("   • start_server.py - Auto-install script")
-    print("   • examples/ - Usage examples")
+    print("   • main.py - Main entry point (modular architecture)")
+    print("   • src/ - Source code modules")
+    print("   •   ├── server.py - Main server class")
+    print("   •   ├── mind_map_generator.py - Mind map generation logic")
+    print("   •   ├── mcp_tools.py - MCP tool definitions (create_mind_map, list_images)")
+    print("   •   ├── storage_manager.py - Multi-cloud storage management")
+    print("   •   ├── config.py - Configuration management")
+    print("   •   └── utils.py - Utility functions")
+    print("   • static_server.py - Static file serving for generated images")
+    print("   • start_server.py - Auto-install startup script")
+    print("   • quick_start.py - User-friendly startup interface")
+    print("   • docker-compose.yml - Docker orchestration (2 services)")
+    print("   • examples/ - Usage examples and documentation")
     print("   • temp/ - Temporary files directory")
-    print("   • output/ - Generated images directory")
+    print("   • output/ - Generated images directory (organized by date)")
     print()
     input("Press Enter to return to main menu...")
 

@@ -143,7 +143,8 @@ def start_server():
     print()
     
     try:
-        subprocess.run([sys.executable, 'mind_map_server.py'])
+        # Use the new modular main.py entry point | 使用新的模块化main.py入口
+        subprocess.run([sys.executable, 'main.py'])
     except KeyboardInterrupt:
         print("\n⏹️  Server stopped by user")
     except Exception as e:

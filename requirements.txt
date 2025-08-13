@@ -1,48 +1,120 @@
-# Mind Map MCP Server Python Dependencies | 思维导图MCP服务器的Python依赖
-# =====================================================
+﻿# Mind Map MCP Server - Python Dependencies | 思维导图MCP服务器 - Python依赖
+# ================================================================
+# 
+# This file contains all Python package dependencies required to run
+# the Mind Map MCP Server with full functionality.
+# 
+# 此文件包含运行思维导图MCP服务器所需的所有Python包依赖。
 
-# MCP protocol support with multiple transports | MCP协议支持（包含多种传输方式）
-# Includes stdio and streamable-http transports | 包含stdio和streamable-http传输
+# Core MCP Protocol Support | 核心MCP协议支持
+# ========================================
+# Model Context Protocol with CLI tools and multiple transport support
+# 模型上下文协议，支持CLI工具和多种传输方式
 mcp[cli]>=1.12.0
 
-# Browser automation for HTML to PNG conversion | 浏览器自动化工具（HTML转PNG）
+# Web Browser Automation | Web浏览器自动化
+# =====================================
+# Playwright for HTML to PNG conversion and web automation
+# 用于HTML转PNG转换和Web自动化的Playwright
 playwright>=1.40.0
 
-# Web server support for HTTP transports | Web服务器支持（用于HTTP传输）
+# Web Server Framework | Web服务器框架
+# ==================================
+# FastAPI for HTTP transport and REST API endpoints
+# 用于HTTP传输和REST API端点的FastAPI
 fastapi>=0.104.0
+
+# ASGI Server | ASGI服务器
+# ======================
+# Uvicorn with standard extras for production-ready server
+# 带有标准扩展的Uvicorn，用于生产就绪的服务器
 uvicorn[standard]>=0.24.0
 
-# Additional MCP transport dependencies | 额外的MCP传输依赖
-# WebSocket support for advanced MCP features | WebSocket支持（用于高级MCP功能）
+# WebSocket Support | WebSocket支持
+# ===============================
+# WebSockets for real-time MCP communication
+# 用于实时MCP通信的WebSockets
 websockets>=12.0
 
-# Type checking and validation | 类型检查和验证
+# Data Validation & Type Safety | 数据验证和类型安全
+# ============================================
+# Pydantic for data validation and settings management
+# 用于数据验证和设置管理的Pydantic
 pydantic>=2.0.0
+
+# Type Extensions | 类型扩展
+# ========================
+# Extended type hints for better code quality
+# 用于提高代码质量的扩展类型提示
 typing-extensions>=4.8.0
 
-# Configuration management | 配置管理
+# Configuration Management | 配置管理
+# =================================
+# Environment variable loading from .env files
+# 从.env文件加载环境变量
 python-dotenv>=1.0.0
 
-# JSON处理（Python内置，这里列出来让你知道会用到）
-# json - 内置模块
+# Additional Notes | 附加说明
+# =========================
+# The following modules are part of Python's standard library:
+# 以下模块是Python标准库的一部分：
+# - json: JSON data handling | JSON数据处理
+# - subprocess: Process management | 进程管理  
+# - time: Time utilities | 时间工具
+# - base64: Base64 encoding/decoding | Base64编码/解码
+# - os: Operating system interface | 操作系统接口
+# - sys: System-specific parameters | 系统特定参数
+# - tempfile: Temporary file handling | 临时文件处理
+# - pathlib: Object-oriented filesystem paths | 面向对象的文件系统路径
+# - asyncio: Asynchronous I/O | 异步I/O
 
-# 系统进程管理（Python内置）
-# subprocess - 内置模块
+# Cloud Storage Dependencies | 云存储依赖
+# ======================================
+# Optional cloud storage providers - install only if needed
+# 可选的云存储提供者 - 仅在需要时安装
 
-# 时间处理（Python内置）
-# time - 内置模块
+# Aliyun OSS Support | 阿里云OSS支持
+# ================================
+# Uncomment if using Aliyun OSS storage | 如果使用阿里云OSS存储请取消注释
+# oss2>=2.17.0
 
-# Base64编码（Python内置）
-# base64 - 内置模块
+# Huawei OceanStor Support | 华为OceanStor支持
+# ==========================================
+# Uncomment if using Huawei OceanStor | 如果使用华为OceanStor请取消注释
+# esdk-obs-python>=3.23.0
 
-# 操作系统接口（Python内置）
-# os - 内置模块
+# MinIO Support | MinIO支持
+# ========================
+# Uncomment if using MinIO storage | 如果使用MinIO存储请取消注释
+# minio>=7.2.0
 
-# 系统特定参数（Python内置）
-# sys - 内置模块
+# Amazon S3 Support | Amazon S3支持
+# ================================
+# Uncomment if using Amazon S3 storage | 如果使用Amazon S3存储请取消注释
+# boto3>=1.34.0
 
-# 临时文件处理（Python内置）
-# tempfile - 内置模块
+# Azure Blob Storage Support | Azure Blob存储支持
+# ==============================================
+# Uncomment if using Azure Blob Storage | 如果使用Azure Blob存储请取消注释
+# azure-storage-blob>=12.19.0
 
-# 类型注解支持（Python内置）
-# typing - 内置模块
+# Google Cloud Storage Support | Google Cloud存储支持
+# =================================================
+# Uncomment if using Google Cloud Storage | 如果使用Google Cloud存储请取消注释
+# google-cloud-storage>=2.10.0
+
+# Installation Instructions | 安装说明
+# ===================================
+# To enable specific cloud storage, uncomment the corresponding line above
+# and run: pip install -r requirements.txt
+# 
+# 要启用特定的云存储，请取消注释上面相应的行，然后运行：pip install -r requirements.txt
+#
+# Example for Aliyun OSS | 阿里云OSS示例:
+# pip install oss2>=2.17.0
+#
+# Example for Google Cloud Storage | Google Cloud存储示例:
+# pip install google-cloud-storage>=2.10.0
+#
+# Example for multiple providers | 多提供者示例:
+# pip install boto3>=1.34.0 azure-storage-blob>=12.19.0 google-cloud-storage>=2.10.0

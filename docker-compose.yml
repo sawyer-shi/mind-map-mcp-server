@@ -1,28 +1,25 @@
-# Mind Map MCP Server - Multi-Transport Support | 思维导图MCP服务器 - 多传输支持
+﻿# Mind Map MCP Server - Docker Compose Configuration
 # ====================================================================
-# This compose file supports two MCP transport protocols:
+# This compose file supports multiple MCP transport protocols and services:
 # - stdio: For local tools and command-line integrations
-# - streamablehttp: For modern web applications with streaming HTTP
+# - streamable-http: For modern web applications with streaming HTTP
+# - static-server: For serving generated mind map files
 #
-# 该编排文件支持两种MCP传输协议：
-# - stdio: 用于本地工具和命令行集成
-# - streamablehttp: 用于现代Web应用程序（流式HTTP）
-#
-# Configuration | 配置:
+# Configuration:
 # Copy env.template to .env and customize your settings
-# 将env.template复制为.env并自定义您的设置
+
+version: '3.8'
 
 services:
-  # Stdio Transport Service | Stdio传输服务
+  # Stdio Transport Service
   # Best for local tools and command-line integrations
-  # 最适合本地工具和命令行集成
   mind-map-stdio:
     build:
       context: .
       dockerfile: Dockerfile
     image: mind-map-mcp-server:unified
     container_name: mind-map-stdio
-    command: ["python", "mind_map_server.py", "stdio", "--host", "${HOST:-0.0.0.0}"]
+    command: ["python", "main.py", "stdio", "--host", "${HOST:-0.0.0.0}"]
     volumes:
       - "${HOST_TEMP_PATH:-./temp}:/app/temp"
       - "${HOST_OUTPUT_PATH:-./output}:/app/output"
@@ -41,16 +38,15 @@ services:
     profiles:
       - stdio  # Only start with --profile stdio
 
-  # Streamable HTTP Transport Service | 流式HTTP传输服务
+  # Streamable HTTP Transport Service
   # Modern HTTP streaming protocol for web applications
-  # 用于Web应用程序的现代HTTP流式协议
   mind-map-streamable:
     build:
       context: .
       dockerfile: Dockerfile
     image: mind-map-mcp-server:unified
     container_name: mind-map-streamable
-    command: ["python", "mind_map_server.py", "streamable-http", "--host", "${HOST:-0.0.0.0}", "--port", "${STREAMABLE_PORT:-8091}"]
+    command: ["python", "main.py", "streamable-http", "--host", "${HOST:-0.0.0.0}", "--port", "${FASTMCP_INTERNAL_PORT:-8000}"]
     ports:
       - "${STREAMABLE_PORT:-8091}:${FASTMCP_INTERNAL_PORT:-8000}"
     volumes:
@@ -67,24 +63,56 @@ services:
       - HOST=${HOST:-0.0.0.0}
       - UVICORN_HOST=${HOST:-0.0.0.0}
       - STREAMABLE_PORT=${STREAMABLE_PORT:-8091}
+      - STATIC_FILE_PORT=${STATIC_FILE_PORT:-8090}
       - FASTMCP_INTERNAL_PORT=${FASTMCP_INTERNAL_PORT:-8000}
     restart: ${RESTART_POLICY:-unless-stopped}
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:${FASTMCP_INTERNAL_PORT:-8000}/mcp/')"]
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:${FASTMCP_INTERNAL_PORT:-8000}/')"]
       interval: ${HEALTH_CHECK_INTERVAL:-30s}
       timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
       retries: ${HEALTH_CHECK_RETRIES:-3}
       start_period: ${HEALTH_CHECK_START_PERIOD:-40s}
 
+  # Static File Server Service
+  # Serves generated mind map files over HTTP
+  mind-map-static:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mind-map-mcp-server:unified
+    container_name: mind-map-static
+    command: ["python", "static_server.py"]
+    ports:
+      - "${STATIC_FILE_PORT:-8090}:${STATIC_FILE_PORT:-8090}"
+    volumes:
+      - "${HOST_TEMP_PATH:-./temp}:/app/temp"
+      - "${HOST_OUTPUT_PATH:-./output}:/app/output"
+      - "${HOST_LOG_PATH:-./logs}:/app/logs"
+    networks:
+      - mind-map-network
+    environment:
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED:-1}
+      - DEBUG=${DEBUG:-false}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - HOST=${HOST:-0.0.0.0}
+      - STATIC_FILE_PORT=${STATIC_FILE_PORT:-8090}
+      - STREAMABLE_PORT=${STREAMABLE_PORT:-8091}
+    restart: ${RESTART_POLICY:-unless-stopped}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:${STATIC_FILE_PORT:-8090}/health')"]
+      interval: ${HEALTH_CHECK_INTERVAL:-30s}
+      timeout: ${HEALTH_CHECK_TIMEOUT:-10s}
+      retries: ${HEALTH_CHECK_RETRIES:-3}
+      start_period: ${HEALTH_CHECK_START_PERIOD:-40s}
 
-# Network Configuration | 网络配置
+# Network Configuration
 networks:
   mind-map-network:
     driver: bridge
     
-# 卷定义（可选）
+# Volume Definitions (Optional)
 volumes:
-  # 持久化数据卷 | Persistent data volumes
+  # Persistent data volumes
   mind-map-temp:
     driver: local
   mind-map-output:
@@ -92,61 +120,62 @@ volumes:
   mind-map-logs:
     driver: local
 
-# Usage Examples | 使用示例
+# Usage Examples
 # ============================
 #
-# Setup Configuration | 设置配置:
+# Setup Configuration:
 #   cp env.template .env
-#   # Edit .env file to customize settings | 编辑.env文件自定义设置
+#   # Edit .env file to customize settings
 #
-# Start all web transport services | 启动所有Web传输服务:
+# Start all web transport services:
 #   docker-compose up -d
 #
-# Start all transports including stdio | 启动包括stdio在内的所有传输服务:
+# Start all transports including stdio:
 #   docker-compose --profile stdio up -d
 #
-# Start specific services | 启动特定服务:
+# Start specific services:
 #   docker-compose up -d mind-map-streamable          # Streamable HTTP only
 #   docker-compose --profile stdio up -d mind-map-stdio  # Stdio interactive mode
 #
-# Test stdio mode interactively | 交互式测试stdio模式:
+# Test stdio mode interactively:
 #   docker-compose --profile stdio run --rm mind-map-stdio
 #
-# View specific service logs | 查看特定服务日志:
+# View specific service logs:
 #   docker-compose logs -f mind-map-streamable
 #   docker-compose --profile stdio logs -f mind-map-stdio
 #
-# Rebuild and restart | 重新构建并重启:
+# Rebuild and restart:
 #   docker-compose up --build -d
 #
-# Stop all services | 停止所有服务:
+# Stop all services:
 #   docker-compose down
 #   docker-compose --profile stdio down  # Include stdio
 #
-# Custom Configuration Examples | 自定义配置示例:
+# Custom Configuration Examples:
 # 
-# Method 1: Environment variables | 方法1：环境变量
+# Method 1: Environment variables
 #   STREAMABLE_PORT=8081 docker-compose up -d
 #   DEBUG=true HOST=127.0.0.1 docker-compose up -d
 #
-# Method 2: .env file (recommended) | 方法2：.env文件（推荐）
-#   # Edit .env file with your settings | 在.env文件中编辑您的设置
+# Method 2: .env file (recommended)
+#   # Edit .env file with your settings
 #   STREAMABLE_PORT=3091
 #   HOST=127.0.0.1
 #   DEBUG=true
 #
-# Configuration Variables | 配置变量:
+# Configuration Variables:
 # See env.template for complete list of configurable options
-# 完整的可配置选项列表请参见env.template
 #
-# Key variables | 主要变量:
-# - HOST: 服务器绑定地址 | Server bind address (default: 0.0.0.0)
-# - STREAMABLE_PORT: 流式HTTP端口 | Streamable HTTP port (default: 8091)  
-# - DEBUG: 调试模式 | Debug mode (default: false)
-# - HOST_TEMP_PATH: 临时文件目录 | Temp files directory (default: ./temp)
-# - HOST_OUTPUT_PATH: 输出文件目录 | Output files directory (default: ./output)
-# - HOST_LOG_PATH: 日志文件目录 | Log files directory (default: ./logs)
+# Key variables:
+# - HOST: Server bind address (default: 0.0.0.0)
+# - STREAMABLE_PORT: Streamable HTTP port (default: 8091)  
+# - STATIC_FILE_PORT: Static file server port (default: 8090)
+# - DEBUG: Debug mode (default: false)
+# - HOST_TEMP_PATH: Temp files directory (default: ./temp)
+# - HOST_OUTPUT_PATH: Output files directory (default: ./output)
+# - HOST_LOG_PATH: Log files directory (default: ./logs)
 #
-# Service Endpoints | 服务端点:
+# Service Endpoints:
 # - Stdio Transport: Interactive command-line interface
 # - Streamable HTTP: http://${HOST}:${STREAMABLE_PORT}/mcp (default: http://localhost:8091/mcp)
+# - Static Files: http://${HOST}:${STATIC_FILE_PORT}/output (default: http://localhost:8090/output)

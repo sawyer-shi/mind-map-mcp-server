@@ -1,0 +1,41 @@
+# Ensure all text files use LF line endings | 确保所有文本文件使用LF行结束符
+* text=auto eol=lf
+
+# Explicitly define text files | 明确定义文本文件
+*.py text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Configuration files | 配置文件
+*.cfg text eol=lf
+*.ini text eol=lf
+*.conf text eol=lf
+Dockerfile text eol=lf
+docker-compose.yml text eol=lf
+.env* text eol=lf
+requirements.txt text eol=lf
+package.json text eol=lf
+
+# Binary files | 二进制文件
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+
+# Special handling for Windows batch files | Windows批处理文件特殊处理
+*.bat eol=crlf
+*.cmd eol=crlf

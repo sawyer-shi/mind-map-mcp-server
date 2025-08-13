@@ -56,7 +56,20 @@ RUN npm install -g markmap-cli
 # 第七步：安装Playwright浏览器
 # 这会下载Chromium浏览器，用来将HTML转换为PNG
 RUN playwright install chromium
-RUN playwright install-deps chromium
+# Install Playwright dependencies with fallback for missing packages | 安装Playwright依赖，对缺失包使用替代方案
+RUN playwright install-deps chromium || apt-get update && apt-get install -y \
+    libnss3 \
+    libnspr4 \
+    libatk-bridge2.0-0 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1 \
+    libxss1 \
+    libasound2 \
+    && rm -rf /var/lib/apt/lists/*
 
 # 第八步：复制项目代码
 COPY . .
@@ -67,7 +80,7 @@ RUN mkdir -p temp output examples
 
 # 第十步：设置权限
 # 确保服务有权限创建和修改文件
-RUN chmod +x mind_map_server.py
+RUN chmod +x main.py
 
 # 第十一步：暴露端口
 # 告诉Docker这个容器需要使用的端口
@@ -87,7 +100,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # 第十四步：启动命令
 # Default command runs stdio mode | 默认命令运行stdio模式
 # Can be overridden via docker run command | 可通过docker run命令覆盖
-CMD ["python", "mind_map_server.py", "stdio"]
+CMD ["python", "main.py", "stdio"]
 
 # 构建和运行说明 | Build and Run Instructions:
 # ==============================================
@@ -101,10 +114,7 @@ CMD ["python", "mind_map_server.py", "stdio"]
 # docker run -it --rm -v $(pwd)/output:/app/output mind-map-mcp-unified
 #
 # 2. Streamable HTTP模式 | Streamable HTTP mode:
-# docker run -p 8091:8091 -v $(pwd)/output:/app/output mind-map-mcp-unified python mind_map_server.py streamable-http --host 0.0.0.0
-#
-# 3. Streamable HTTP模式 | Streamable HTTP mode:
-# docker run -p 8091:8091 -v $(pwd)/output:/app/output mind-map-mcp-unified python mind_map_server_unified.py streamable-http --host 0.0.0.0
+# docker run -p 8091:8091 -v $(pwd)/output:/app/output mind-map-mcp-unified python main.py streamable-http --host 0.0.0.0
 #
 # 映射说明 | Volume mapping:
 # -v $(pwd)/output:/app/output 将生成的图片保存到本地output目录

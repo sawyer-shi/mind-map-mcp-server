@@ -108,13 +108,15 @@ logs/
 *.log
 
 # Temporary files | 临时文件
-temp/
+temp/*
+!temp/.gitkeep
 tmp/
 *.tmp
 *.temp
 
 # Output files | 输出文件
-output/
+output/*
+!output/.gitkeep
 *.png
 *.jpg
 *.jpeg
