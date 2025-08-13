@@ -56,7 +56,20 @@ RUN npm install -g markmap-cli
 # 第七步：安装Playwright浏览器
 # 这会下载Chromium浏览器，用来将HTML转换为PNG
 RUN playwright install chromium
-RUN playwright install-deps chromium
+# Install Playwright dependencies with fallback for missing packages | 安装Playwright依赖，对缺失包使用替代方案
+RUN playwright install-deps chromium || apt-get update && apt-get install -y \
+    libnss3 \
+    libnspr4 \
+    libatk-bridge2.0-0 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1 \
+    libxss1 \
+    libasound2 \
+    && rm -rf /var/lib/apt/lists/*
 
 # 第八步：复制项目代码
 COPY . .

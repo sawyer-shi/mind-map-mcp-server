@@ -184,7 +184,7 @@ When successfully configured, you'll see output like:
 ```json
 {
   "success": true,
-  "storage_url": "https://storage.googleapis.com/my-mindmap-bucket/2024/01/15/my_mindmap_1705123456.png",
+  "mind_map_image_url": "https://storage.googleapis.com/my-mindmap-bucket/2024/01/15/my_mindmap_1705123456.png",
   "storage_type": "google_cloud_storage",
   "storage_message": "File uploaded to Google Cloud Storage: 2024/01/15/my_mindmap_1705123456.png"
 }

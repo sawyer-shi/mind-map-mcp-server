@@ -240,9 +240,27 @@ class MindMapGenerator:
             # Read PNG file and encode to base64 with proper data URI format | 读取PNG文件并编码为带有正确数据URI格式的base64
             with open(temp_png_file, 'rb') as f:
                 image_bytes = f.read()
+                
+                # Validate image data before encoding | 编码前验证图像数据
+                if len(image_bytes) == 0:
+                    raise Exception("PNG file is empty - no image data to encode")
+                
+                # Verify PNG file signature | 验证PNG文件签名
+                if not image_bytes.startswith(b'\x89PNG\r\n\x1a\n'):
+                    raise Exception("Invalid PNG file format - file may be corrupted")
+                
                 image_base64 = base64.b64encode(image_bytes).decode('utf-8')
-                # Add data URI prefix for proper display in browsers and clients | 添加数据URI前缀以便在浏览器和客户端正确显示
-                image_data = f"data:image/png;base64,{image_base64}"
+                
+                # Validate base64 encoding | 验证base64编码
+                if len(image_base64) == 0:
+                    raise Exception("Failed to encode PNG to base64")
+                
+                # Log validation success but don't return base64 to client to avoid large response | 记录验证成功但不向客户端返回base64以避免大响应
+                print(f"Base64 encoding successful: {len(image_bytes)} bytes -> {len(image_base64)} base64 chars")
+                print("Image validation passed - base64 generated for internal validation only")
+                
+                # Set image_data to None to avoid returning large base64 to client | 设置image_data为None以避免向客户端返回大量base64数据
+                image_data = None
             
             print(f"Mind map generated successfully: {temp_png_file}")
             
@@ -253,7 +271,7 @@ class MindMapGenerator:
                 "success": True,
                 "error": None,
                 "image_data": image_data,
-                "storage_url": storage_result.get("url"),
+                "mind_map_image_url": storage_result.get("url"),
                 "storage_message": storage_result.get("message"),
                 "storage_type": storage_result.get("storage_type"),
                 "temp_files": {

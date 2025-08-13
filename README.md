@@ -19,27 +19,31 @@ A powerful MCP (Model Context Protocol) server that converts Markdown text into 
 ### ✨ Features
 
 - 📝 **Markdown Input Support** - Convert any Markdown text to mind maps
-- 🖼️ **High-Quality PNG Output** - Generate crisp, clear mind map images  
-- 🐳 **Docker Ready** - One-command deployment with Docker **(HIGHLY RECOMMENDED | 强烈推荐)**
-- 🔌 **Full MCP Protocol** - Standard MCP compliance for seamless integration
-- ⚡ **Fast Generation** - Quick conversion and processing
+- 🖼️ **High-Quality PNG Output** - Generate crisp, clear mind map images (watermark-free)
+- 🐳 **Docker Ready (HIGHLY RECOMMENDED)** - One-command deployment with Docker
+- 🔌 **Full MCP Protocol** - Standard MCP compliance with optimized responses
+- ⚡ **Fast Generation** - Quick conversion and processing with advanced validation
 - 🌐 **Multiple Access Methods** - HTTP and stdio transport support
 - ☁️ **Multi-Cloud Storage** - Support for local, Aliyun OSS, Huawei OceanStor, MinIO, Amazon S3, Azure Blob, and Google Cloud Storage
 - 🔗 **Direct Access URLs** - Get shareable links to your generated mind maps
+- 🔍 **Smart Image Listing** - Query images by date and fuzzy name matching
+- ✅ **Advanced Validation** - Comprehensive image validation and error handling
 
 ### 🎯 Core Functions
 
 #### 1. `list_images`
-- **Purpose**: List all generated mind map images
-- **Parameters**: None
-- **Returns**: List of available mind map images with metadata
+- **Purpose**: List generated mind map images by date with optional name filtering
+- **Parameters**:
+  - `date` (string, optional): Date in YYYY-MM-DD format (defaults to current date)
+  - `name_filter` (string, optional): Fuzzy name matching filter
+- **Returns**: List of matching mind map images with URLs and metadata
 
 #### 2. `create_mind_map`
-- **Purpose**: Generate mind map PNG from Markdown content and automatically save to configured storage
+- **Purpose**: Generate watermark-free mind map PNG from Markdown content and save to configured storage
 - **Parameters**:
-  - `markdown_content` (string): Markdown formatted text
-  - `title` (string, optional): Mind map title
-- **Returns**: Base64 encoded PNG image data and storage URL
+  - `markdown_content` (string): Markdown formatted text with hierarchical structure support
+  - `title` (string, optional): Mind map title (used as filename)
+- **Returns**: Mind map image URL, storage information, and validation status
 
 ### 🚀 Quick Start
 
@@ -383,27 +387,31 @@ A: Yes! Full Unicode support including Chinese, Japanese, Arabic, etc.
 ### ✨ 功能特性
 
 - 📝 **Markdown输入支持** - 将任何Markdown文本转换为思维导图
-- 🖼️ **高质量PNG输出** - 生成清晰、美观的思维导图图片
-- 🐳 **Docker就绪** - 一键Docker部署
-- 🔌 **完整MCP协议** - 标准MCP合规，无缝集成
-- ⚡ **快速生成** - 快速转换和处理
+- 🖼️ **高质量PNG输出** - 生成清晰、美观的思维导图图片（无水印）
+- 🐳 **Docker就绪（强烈推荐）** - 一键Docker部署
+- 🔌 **完整MCP协议** - 标准MCP合规，优化响应性能
+- ⚡ **快速生成** - 快速转换和处理，高级验证机制
 - 🌐 **多种访问方式** - 支持HTTP和stdio传输
 - ☁️ **多云存储支持** - 支持本地、阿里云OSS、华为OceanStor、MinIO、Amazon S3、Azure Blob和Google Cloud存储
 - 🔗 **直接访问链接** - 获取生成的思维导图的可分享链接
+- 🔍 **智能图片列表** - 按日期查询图片，支持模糊名称匹配
+- ✅ **高级验证** - 全面的图片验证和错误处理机制
 
 ### 🎯 核心功能
 
 #### 1. `list_images`
-- **用途**：列出所有生成的思维导图图像
-- **参数**：无
-- **返回**：可用思维导图图像列表及元数据
+- **用途**：按日期列出生成的思维导图图像，支持可选的名称过滤
+- **参数**：
+  - `date` (字符串，可选): YYYY-MM-DD格式的日期（默认为当前日期）
+  - `name_filter` (字符串，可选): 模糊名称匹配过滤器
+- **返回**：匹配的思维导图图像列表，包含URL和元数据
 
 #### 2. `create_mind_map`
-- **用途**：根据Markdown内容生成思维导图PNG并自动保存到配置的存储
+- **用途**：根据Markdown内容生成无水印思维导图PNG并保存到配置的存储
 - **参数**：
-  - `markdown_content` (字符串): Markdown格式的文本
-  - `title` (字符串，可选): 思维导图标题
-- **返回**：Base64编码的PNG图片数据和存储URL
+  - `markdown_content` (字符串): 支持分层结构的Markdown格式文本
+  - `title` (字符串，可选): 思维导图标题（用作文件名）
+- **返回**：思维导图图像URL、存储信息和验证状态
 
 ### 🚀 快速开始
 
