@@ -79,6 +79,14 @@ class Config:
     DEBUG = get_env("DEBUG", "false", bool)
     LOG_LEVEL = get_env("LOG_LEVEL", "INFO")
     
+    # Image quality settings | 图片质量设置
+    IMAGE_QUALITY = get_env("IMAGE_QUALITY", "high")
+    DEVICE_SCALE_FACTOR = get_env("DEVICE_SCALE_FACTOR", "2.0", float)
+    BASE_VIEWPORT_WIDTH = get_env("BASE_VIEWPORT_WIDTH", "1200", int)
+    BASE_VIEWPORT_HEIGHT = get_env("BASE_VIEWPORT_HEIGHT", "800", int)
+    MAX_VIEWPORT_WIDTH = get_env("MAX_VIEWPORT_WIDTH", "2400", int)
+    MAX_VIEWPORT_HEIGHT = get_env("MAX_VIEWPORT_HEIGHT", "1600", int)
+    
     # Directory configuration | 目录配置
     HOST_TEMP_PATH = get_env("HOST_TEMP_PATH", "./temp")
     HOST_OUTPUT_PATH = get_env("HOST_OUTPUT_PATH", "./output")

@@ -1,2 +1,3 @@
-# This file ensures the temp directory is tracked by git
-# 此文件确保temp目录被git跟踪
+# This file ensures the temp directory is tracked by Git | 此文件确保temp目录被Git跟踪
+# The temp directory is needed for temporary file storage during mind map generation
+# temp目录用于思维导图生成过程中的临时文件存储
