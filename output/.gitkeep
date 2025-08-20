@@ -1,3 +1,0 @@
-# This file ensures the output directory is tracked by Git | 此文件确保output目录被Git跟踪
-# The output directory is needed for storing generated mind map images
-# output目录用于存储生成的思维导图图像

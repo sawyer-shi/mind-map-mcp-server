@@ -9,8 +9,14 @@
     "dev": "python main.py",
     "dev:stdio": "python main.py stdio",
     "dev:http": "python main.py streamable-http",
-    "docker:build": "docker build -t mind-map-mcp .",
-    "docker:run": "docker run -p 8091:8091 mind-map-mcp"
+    "docker:build": "docker build -t mind-map-mcp-server:unified .",
+    "docker:run": "docker run -p 8091:8091 mind-map-mcp-server:unified",
+    "docker:stdio": "docker run --rm -i -v $(pwd)/output:/app/output -v $(pwd)/temp:/app/temp mind-map-mcp-server:unified python main.py stdio",
+    "uvx:stdio": "uvx --from . python main.py stdio",
+    "uvx:http": "uvx --from . python main.py streamable-http --host 0.0.0.0 --port 8091",
+    "compose:up": "docker-compose up -d",
+    "compose:down": "docker-compose down",
+    "compose:stdio": "docker-compose --profile stdio up -d"
   },
   "keywords": [
     "mindmap",

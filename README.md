@@ -106,7 +106,34 @@ docker-compose logs -f
 docker-compose down
 ```
 
-#### Method 2: Local Installation
+#### Method 2: uvx Deployment (Recommended for Python environments)
+
+1. **Install uvx (if not already installed)**:
+```bash
+# Install uvx using pip
+pip install uvx
+
+# Or install using pipx
+pipx install uvx
+```
+
+2. **Run with uvx (from local project)**:
+```bash
+# Navigate to project directory first
+cd mind-map-mcp-server
+
+# For stdio mode (MCP client integration)
+uvx --from . python main.py stdio
+
+# For streamable HTTP mode
+uvx --from . python main.py streamable-http --host 0.0.0.0 --port 8091
+```
+
+3. **Access URLs (HTTP mode)**:
+   - HTTP MCP Endpoint: `http://localhost:8091/mcp`
+   - Service Status: `http://localhost:8091`
+
+#### Method 3: Local Installation
 
 1. **Auto-install and start**:
 ```bash
@@ -138,22 +165,86 @@ python test_modular.py
 ```
 
 #### For Docker + Stdio Transport:
+
+**Prerequisites**:
+1. Build the Docker image first:
+```bash
+docker build -t mind-map-mcp-server:unified .
+```
+
+**Configuration**:
 ```json
 {
   "mcpServers": {
     "mind-map-server": {
       "command": "docker",
       "args": [
-        "exec", 
-        "-i", 
-        "mind-map-mcp-server", 
+        "run", 
+        "--rm",
+        "-i",
+        "-v", "$(pwd)/output:/app/output",
+        "-v", "$(pwd)/temp:/app/temp", 
+        "mind-map-mcp-server:unified",
         "python", 
-        "mind_map_server.py"
+        "main.py",
+        "stdio"
       ]
     }
   }
 }
 ```
+
+**Alternative using npm script**:
+```bash
+npm run docker:stdio
+```
+
+#### For uvx + Stdio Transport (Recommended for Python environments):
+
+**Prerequisites**:
+1. Install uvx if not already installed:
+```bash
+pip install uvx
+# or
+pipx install uvx
+```
+
+2. Ensure the project is available (clone or download):
+```bash
+git clone https://github.com/sawyer-shi/mind-map-mcp-server.git
+cd mind-map-mcp-server
+```
+
+**Configuration**:
+```json
+{
+  "mcpServers": {
+    "mind-map-server": {
+      "command": "uvx",
+      "args": [
+        "--from", ".",
+        "python", 
+        "main.py",
+        "stdio"
+      ]
+    }
+  }
+}
+```
+
+**Alternative using npm script**:
+```bash
+npm run uvx:stdio
+```
+
+### 📊 Deployment Methods Comparison
+
+| Method | Pros | Cons | Best For |
+|--------|------|------|----------|
+| **Docker + HTTP** | ✅ Easy setup<br>✅ Isolated environment<br>✅ Production ready | ❌ Requires Docker<br>❌ Network overhead | Web applications, production |
+| **Docker + Stdio** | ✅ Direct integration<br>✅ No network required<br>✅ Isolated environment | ❌ Requires Docker<br>❌ Complex setup | MCP clients, secure environments |
+| **uvx + Stdio** | ✅ Python-native<br>✅ Fast startup<br>✅ Simple dependencies | ❌ Requires Python<br>❌ Less isolation | Development, Python environments |
+| **Local Install** | ✅ Full control<br>✅ Easy debugging<br>✅ No containerization | ❌ Manual setup<br>❌ Dependency conflicts | Development, customization |
 
 ### 📍 Configuration File Locations
 
@@ -480,7 +571,34 @@ docker-compose logs -f
 docker-compose down
 ```
 
-#### 方式2：本地安装
+#### 方式2：uvx部署（推荐用于Python环境）
+
+1. **安装uvx（如果尚未安装）**：
+```bash
+# 使用pip安装uvx
+pip install uvx
+
+# 或使用pipx安装
+pipx install uvx
+```
+
+2. **使用uvx运行（从本地项目）**：
+```bash
+# 首先导航到项目目录
+cd mind-map-mcp-server
+
+# stdio模式（MCP客户端集成）
+uvx --from . python main.py stdio
+
+# 流式HTTP模式
+uvx --from . python main.py streamable-http --host 0.0.0.0 --port 8091
+```
+
+3. **访问地址（HTTP模式）**：
+   - HTTP MCP端点：`http://localhost:8091/mcp`
+   - 服务状态：`http://localhost:8091`
+
+#### 方式3：本地安装
 
 1. **自动安装启动**：
 ```bash
@@ -512,22 +630,86 @@ python test_modular.py
 ```
 
 #### Docker + Stdio传输方式：
+
+**前置条件**：
+1. 首先构建Docker镜像：
+```bash
+docker build -t mind-map-mcp-server:unified .
+```
+
+**配置**：
 ```json
 {
   "mcpServers": {
     "mind-map-server": {
       "command": "docker",
       "args": [
-        "exec", 
-        "-i", 
-        "mind-map-mcp-server", 
+        "run", 
+        "--rm",
+        "-i",
+        "-v", "$(pwd)/output:/app/output",
+        "-v", "$(pwd)/temp:/app/temp", 
+        "mind-map-mcp-server:unified",
         "python", 
-        "mind_map_server.py"
+        "main.py",
+        "stdio"
       ]
     }
   }
 }
 ```
+
+**使用npm脚本的替代方式**：
+```bash
+npm run docker:stdio
+```
+
+#### uvx + Stdio传输方式（推荐用于Python环境）：
+
+**前置条件**：
+1. 安装uvx（如果尚未安装）：
+```bash
+pip install uvx
+# 或
+pipx install uvx
+```
+
+2. 确保项目可用（克隆或下载）：
+```bash
+git clone https://github.com/sawyer-shi/mind-map-mcp-server.git
+cd mind-map-mcp-server
+```
+
+**配置**：
+```json
+{
+  "mcpServers": {
+    "mind-map-server": {
+      "command": "uvx",
+      "args": [
+        "--from", ".",
+        "python", 
+        "main.py",
+        "stdio"
+      ]
+    }
+  }
+}
+```
+
+**使用npm脚本的替代方式**：
+```bash
+npm run uvx:stdio
+```
+
+### 📊 部署方式对比
+
+| 方式 | 优点 | 缺点 | 适用场景 |
+|------|------|------|----------|
+| **Docker + HTTP** | ✅ 设置简单<br>✅ 环境隔离<br>✅ 生产就绪 | ❌ 需要Docker<br>❌ 网络开销 | Web应用, 生产环境 |
+| **Docker + Stdio** | ✅ 直接集成<br>✅ 无需网络<br>✅ 环境隔离 | ❌ 需要Docker<br>❌ 设置复杂 | MCP客户端, 安全环境 |
+| **uvx + Stdio** | ✅ Python原生<br>✅ 启动快速<br>✅ 依赖简单 | ❌ 需要Python<br>❌ 隔离性较弱 | 开发环境, Python环境 |
+| **本地安装** | ✅ 完全控制<br>✅ 易于调试<br>✅ 无容器化 | ❌ 手动设置<br>❌ 依赖冲突 | 开发调试, 定制化 |
 
 ### 📍 配置文件位置
 
