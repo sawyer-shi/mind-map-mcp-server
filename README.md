@@ -9,6 +9,8 @@
 ## 🌟 Mind Map MCP Server
 
 A powerful MCP (Model Context Protocol) server that converts Markdown text into beautiful mind map PNG images.
+<img width="3456" height="2976" alt="世界著名电影排行榜" src="https://github.com/user-attachments/assets/b3f627b3-8720-4081-a047-909d01381d0b" />
+
 
 ### 👨‍💻 Author
 **sawyer-shi**
@@ -474,6 +476,8 @@ A: Yes! Full Unicode support including Chinese, Japanese, Arabic, etc.
 ## 🌟 思维导图MCP服务器
 
 一个强大的MCP（模型上下文协议）服务器，可将Markdown文本转换为美观的思维导图PNG图片。
+<img width="3456" height="2976" alt="世界著名电影排行榜" src="https://github.com/user-attachments/assets/eb61d720-013a-4d3a-8fa4-849e68fc9e49" />
+
 
 ### 👨‍💻 作者
 **sawyer-shi**
