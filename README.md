@@ -536,8 +536,8 @@ A: Yes! Full Unicode support including Chinese, Japanese, Arabic, etc.
 > 
 > # 示例 | Examples:
 > # LOCAL_HOST=192.168.1.100    # 局域网 | Local network
-> # LOCAL_HOST=10.10.228.153    # 内网 | Internal network  
-> # LOCAL_HOST=203.0.113.1      # 公网IP | Public IP
+> # LOCAL_HOST=10.10.228.155    # 内网 | Internal network  
+> # LOCAL_HOST=207.0.113.1      # 公网IP | Public IP
 > ```
 > 
 > ### 🔥 为什么这很重要 | Why This Matters
