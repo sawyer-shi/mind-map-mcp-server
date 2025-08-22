@@ -1,17 +1,17 @@
-﻿# Mind Map MCP Server - Production Docker Compose Configuration
+# Mind Map MCP Server - Development Docker Compose Configuration
 # ====================================================================
-# This is the PRODUCTION configuration that uses pre-built Docker Hub images.
-# For development with local builds, use docker-compose.dev.yml instead.
+# This is the DEVELOPMENT configuration that builds images from local source code.
+# For production deployment with pre-built images, use docker-compose.yml instead.
 #
 # This compose file supports multiple MCP transport protocols and services:
 # - stdio: For local tools and command-line integrations
 # - streamable-http: For modern web applications with streaming HTTP
 # - static-server: For serving generated mind map files
 #
-# Quick Start:
+# Quick Start for Development:
 #   cp env.template .env
-#   # Edit .env file to set LOCAL_HOST to your server IP
-#   docker-compose up -d
+#   # Edit .env file to customize settings
+#   docker-compose -f docker-compose.dev.yml up -d
 #
 # Configuration:
 # Copy env.template to .env and customize your settings
@@ -22,8 +22,11 @@ services:
   # Stdio Transport Service
   # Best for local tools and command-line integrations
   mind-map-stdio:
-    image: sawyershi/mind-map-mcp-server:latest
-    container_name: mind-map-stdio
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mind-map-mcp-server:unified
+    container_name: mind-map-stdio-dev
     command: ["python", "main.py", "stdio", "--host", "${HOST:-0.0.0.0}"]
     volumes:
       - "${HOST_TEMP_PATH:-./temp}:/app/temp"
@@ -46,8 +49,11 @@ services:
   # Streamable HTTP Transport Service
   # Modern HTTP streaming protocol for web applications
   mind-map-streamable:
-    image: sawyershi/mind-map-mcp-server:latest
-    container_name: mind-map-streamable
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mind-map-mcp-server:unified
+    container_name: mind-map-streamable-dev
     command: ["python", "main.py", "streamable-http", "--host", "${HOST:-0.0.0.0}", "--port", "${FASTMCP_INTERNAL_PORT:-8000}"]
     ports:
       - "${STREAMABLE_PORT:-8091}:${FASTMCP_INTERNAL_PORT:-8000}"
@@ -78,8 +84,11 @@ services:
   # Static File Server Service
   # Serves generated mind map files over HTTP
   mind-map-static:
-    image: sawyershi/mind-map-mcp-server:latest
-    container_name: mind-map-static
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: mind-map-mcp-server:unified
+    container_name: mind-map-static-dev
     command: ["python", "static_server.py"]
     ports:
       - "${STATIC_FILE_PORT:-8090}:${STATIC_FILE_PORT:-8090}"
@@ -119,46 +128,49 @@ volumes:
   mind-map-logs:
     driver: local
 
-# Usage Examples - Production Environment
-# ========================================
+# Usage Examples - Development Environment
+# =========================================
 #
-# PRODUCTION DEPLOYMENT (uses Docker Hub images):
+# DEVELOPMENT DEPLOYMENT (builds from local source):
 #
 # Setup Configuration:
 #   cp env.template .env
-#   # CRITICAL: Edit .env file and set LOCAL_HOST to your server IP
-#   # Example: LOCAL_HOST=192.168.1.100
+#   # Edit .env file to customize settings
+#   # For development, LOCAL_HOST=127.0.0.1 is usually fine
 #
-# Start all web transport services (recommended):
-#   docker-compose up -d
+# Start all web transport services:
+#   docker-compose -f docker-compose.dev.yml up -d
 #
 # Start all transports including stdio:
-#   docker-compose --profile stdio up -d
+#   docker-compose -f docker-compose.dev.yml --profile stdio up -d
 #
 # Start specific services:
-#   docker-compose up -d mind-map-streamable          # Streamable HTTP only
-#   docker-compose --profile stdio up -d mind-map-stdio  # Stdio interactive mode
+#   docker-compose -f docker-compose.dev.yml up -d mind-map-streamable    # Streamable HTTP only
+#   docker-compose -f docker-compose.dev.yml --profile stdio up -d mind-map-stdio  # Stdio interactive mode
 #
 # Test stdio mode interactively:
-#   docker-compose --profile stdio run --rm mind-map-stdio
+#   docker-compose -f docker-compose.dev.yml --profile stdio run --rm mind-map-stdio
 #
 # View specific service logs:
-#   docker-compose logs -f mind-map-streamable
-#   docker-compose --profile stdio logs -f mind-map-stdio
+#   docker-compose -f docker-compose.dev.yml logs -f mind-map-streamable
+#   docker-compose -f docker-compose.dev.yml --profile stdio logs -f mind-map-stdio
+#
+# Rebuild and restart (after code changes):
+#   docker-compose -f docker-compose.dev.yml up --build -d
 #
 # Stop all services:
-#   docker-compose down
-#   docker-compose --profile stdio down  # Include stdio
+#   docker-compose -f docker-compose.dev.yml down
+#   docker-compose -f docker-compose.dev.yml --profile stdio down  # Include stdio
 #
-# DEVELOPMENT ENVIRONMENT:
-# For local development with source code builds, use:
-#   docker-compose -f docker-compose.dev.yml up -d
+# PRODUCTION ENVIRONMENT:
+# For production deployment with pre-built Docker Hub images, use:
+#   docker-compose up -d
 #
 # Custom Configuration Examples:
 # 
 # Method 1: Environment variables
-#   STREAMABLE_PORT=8081 docker-compose up -d
-#   DEBUG=true HOST=127.0.0.1 docker-compose up -d
+#   STREAMABLE_PORT=8081 docker-compose -f docker-compose.dev.yml up -d
+#   DEBUG=true HOST=127.0.0.1 docker-compose -f docker-compose.dev.yml up -d
 #
 # Method 2: .env file (recommended)
 #   # Edit .env file with your settings
