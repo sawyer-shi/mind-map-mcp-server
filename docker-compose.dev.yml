@@ -40,6 +40,7 @@ services:
       - DEBUG=${DEBUG:-false}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - HOST=${HOST:-0.0.0.0}
+      - LOCAL_HOST=${LOCAL_HOST:-127.0.0.1}
     restart: "no"  # stdio mode is interactive, don't auto-restart
     stdin_open: true
     tty: true
@@ -69,6 +70,7 @@ services:
       - DEBUG=${DEBUG:-false}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - HOST=${HOST:-0.0.0.0}
+      - LOCAL_HOST=${LOCAL_HOST:-127.0.0.1}
       - UVICORN_HOST=${HOST:-0.0.0.0}
       - STREAMABLE_PORT=${STREAMABLE_PORT:-8091}
       - STATIC_FILE_PORT=${STATIC_FILE_PORT:-8090}
@@ -103,6 +105,7 @@ services:
       - DEBUG=${DEBUG:-false}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - HOST=${HOST:-0.0.0.0}
+      - LOCAL_HOST=${LOCAL_HOST:-127.0.0.1}
       - STATIC_FILE_PORT=${STATIC_FILE_PORT:-8090}
       - STREAMABLE_PORT=${STREAMABLE_PORT:-8091}
     restart: ${RESTART_POLICY:-unless-stopped}

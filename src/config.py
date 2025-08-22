@@ -96,6 +96,23 @@ class Config:
     STORAGE_TYPE = get_env("STORAGE_TYPE", "local")
     
     # Local storage configuration | 本地存储配置
+    @staticmethod
+    def get_local_storage_url_prefix():
+        """
+        Dynamically get local storage URL prefix | 动态获取本地存储URL前缀
+        This ensures the URL is always current, even when IP changes.
+        这确保URL始终是最新的，即使IP发生变化。
+        """
+        local_host = get_env("LOCAL_HOST", "127.0.0.1")
+        static_port = get_env("STATIC_FILE_PORT", "8090", int)
+        custom_prefix = get_env("LOCAL_STORAGE_URL_PREFIX", "")
+        
+        if custom_prefix:
+            return expand_env_vars(custom_prefix)
+        else:
+            return f"http://{local_host}:{static_port}/output"
+    
+    # Keep the static property for backward compatibility | 保持静态属性以向后兼容
     LOCAL_STORAGE_URL_PREFIX = get_env_expanded("LOCAL_STORAGE_URL_PREFIX", f"http://{LOCAL_HOST}:{STATIC_FILE_PORT}/output")
     
     # Aliyun OSS configuration | 阿里云OSS配置

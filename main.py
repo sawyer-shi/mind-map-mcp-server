@@ -12,15 +12,15 @@ import asyncio
 import sys
 from pathlib import Path
 
-# Add src to path for imports | 将src添加到路径以便导入
-sys.path.insert(0, str(Path(__file__).parent / "src"))
-
 # Load environment variables from .env file if available | 如果可用，从.env文件加载环境变量
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
     pass
+
+# Add src to path for imports | 将src添加到路径以便导入
+sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from src.server import MindMapServer
 

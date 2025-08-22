@@ -219,7 +219,7 @@ class MCPTools:
             sys.path.append(os.path.dirname(os.path.abspath(__file__)))
             from config import Config
             config = Config()
-            base_url = config.LOCAL_STORAGE_URL_PREFIX
+            base_url = config.get_local_storage_url_prefix()
             
             response_lines = []
             if name_filter:
@@ -410,7 +410,7 @@ class FastMCPTools:
                 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
                 from config import Config
                 config = Config()
-                base_url = config.LOCAL_STORAGE_URL_PREFIX
+                base_url = config.get_local_storage_url_prefix()
                 
                 images = []
                 for file_path in sorted(png_files, key=lambda x: x.stat().st_mtime, reverse=True):

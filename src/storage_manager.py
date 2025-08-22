@@ -484,7 +484,7 @@ class StorageManager:
         """
         try:
             if self.storage_type == "local":
-                return LocalStorageProvider(self.output_dir, Config.LOCAL_STORAGE_URL_PREFIX)
+                return LocalStorageProvider(self.output_dir, Config.get_local_storage_url_prefix())
             elif self.storage_type == "aliyun_oss":
                 return AliyunOSSProvider()
             elif self.storage_type == "huawei_oceanstor":
@@ -499,11 +499,11 @@ class StorageManager:
                 return GoogleCloudStorageProvider()
             else:
                 print(f"Warning: Unknown storage type '{self.storage_type}', falling back to local storage")
-                return LocalStorageProvider(self.output_dir, Config.LOCAL_STORAGE_URL_PREFIX)
+                return LocalStorageProvider(self.output_dir, Config.get_local_storage_url_prefix())
         except Exception as e:
             print(f"Error initializing {self.storage_type} storage provider: {str(e)}")
             print("Falling back to local storage")
-            return LocalStorageProvider(self.output_dir, Config.LOCAL_STORAGE_URL_PREFIX)
+            return LocalStorageProvider(self.output_dir, Config.get_local_storage_url_prefix())
     
     async def save_mind_map(self, file_path: str, filename: Optional[str] = None) -> Dict[str, Any]:
         """
