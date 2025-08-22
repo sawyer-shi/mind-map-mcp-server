@@ -307,7 +307,8 @@ mind-map-mcp-server/
 ```
 
 **Output**: Beautiful PNG mind map visualizing the complete learning structure!
-<img width="1728" height="2076" alt="image" src="https://github.com/user-attachments/assets/0de3a7f7-2c4f-4d89-9023-f396b2013e12" />
+<img width="1153" height="502" alt="image" src="https://github.com/user-attachments/assets/03491b1c-918c-46c2-8487-9ba16c55a28e" />
+
 
 
 ### ❓ FAQ
@@ -673,7 +674,8 @@ mind-map-mcp-server/
 ```
 
 **输出**：生成一张美观的PNG思维导图，展示完整的学习计划结构！
-<img width="1728" height="2076" alt="image" src="https://github.com/user-attachments/assets/24f6e65e-eab3-4f92-8fa4-e409152e07f3" />
+<img width="1159" height="450" alt="image" src="https://github.com/user-attachments/assets/8e21ba12-26d5-4f69-bc22-5d5e876de4c6" />
+
 
 
 ### ❓ 常见问题
