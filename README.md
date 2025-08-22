@@ -73,8 +73,8 @@ A powerful MCP (Model Context Protocol) server that converts Markdown text into 
 > 
 > # Examples | 示例:
 > # LOCAL_HOST=192.168.1.100    # Local network | 局域网
-> # LOCAL_HOST=10.10.228.153    # Internal network | 内网
-> # LOCAL_HOST=203.0.113.1      # Public IP | 公网IP
+> # LOCAL_HOST=10.10.228.155    # Internal network | 内网
+> # LOCAL_HOST=209.0.113.1      # Public IP | 公网IP
 > ```
 > 
 > ### 🔥 Why This Matters | 为什么这很重要
@@ -313,62 +313,144 @@ mind-map-mcp-server/
 
 ### ❓ FAQ
 
+#### 🚀 Getting Started | 入门问题
+
 **Q: Can non-programmers use this?**
-A: Absolutely! Just run `python start_server.py` and follow the prompts.
+A: Absolutely! We provide multiple easy-to-use options:
+- **Simplest**: Run `python start_server.py` and follow the prompts
+- **Docker**: `docker-compose up -d` for one-command deployment
+- **uvx**: `uvx --from . python main.py streamable-http` for modern Python environments
+
+**Q: What are the different deployment methods?**
+A: We offer 3 main deployment methods:
+1. **Docker (🔥Recommended)**: `docker-compose up -d` - Production-ready with automatic restarts
+2. **uvx**: Modern Python tool execution - great for development
+3. **Local Installation**: Traditional pip install method - full control
+
+**Q: Which ports does the service use?**
+A: Default ports are:
+- **8091**: Main MCP service (streamable HTTP)
+- **8090**: Static file server (for image access)
+- **8000**: Internal FastMCP port (Docker only)
+- All ports are configurable via `.env` file
+
+#### 🖼️ Features & Functionality | 功能相关
 
 **Q: Why PNG instead of HTML?**
-A: PNG images can be easily inserted into documents, presentations, and shared anywhere.
+A: PNG images offer several advantages:
+- Easy insertion into documents and presentations
+- Universal compatibility across all platforms
+- No dependency on JavaScript or web browsers for viewing
+- Perfect for sharing and archiving
 
-**Q: Docker vs local installation?**
-A: Docker is simpler - just one command to start. Recommended for beginners.
+**Q: What image quality options are available?**
+A: Four quality levels:
+- **low**: 800x600 viewport, 1x scale - fast generation
+- **medium**: 1000x700 viewport, 1.5x scale - balanced
+- **high**: 1200x800 viewport, 2x scale - recommended default
+- **ultra**: 2400x1600 viewport, 3x scale - maximum quality
 
 **Q: Does it support non-English languages?**
-A: Yes! Full Unicode support including Chinese, Japanese, Arabic, etc.
+A: Yes! Full Unicode support including:
+- Chinese (中文) - with proper font rendering
+- Japanese (日本語)
+- Arabic (العربية)
+- All other Unicode languages
+- Automatic font injection ensures proper display
 
-### 🛠️ Troubleshooting Guide
+#### ☁️ Storage & Configuration | 存储配置
 
-#### Common Issues and Solutions
+**Q: What storage options are supported?**
+A: Multiple storage providers:
+- **Local**: Default option, files saved locally
+- **Aliyun OSS**: Chinese cloud storage
+- **Huawei OceanStor**: Enterprise cloud storage
+- **MinIO**: Self-hosted S3-compatible storage
+- **Amazon S3**: AWS cloud storage
+- **Azure Blob**: Microsoft cloud storage
+- **Google Cloud Storage**: Google cloud platform
 
-**1. "Unexpected content type" Error**
-- **Cause**: MCP client expects JSON responses for all requests
-- **Solution**: Fixed in v1.0.1 - all responses now return proper JSON format
-- **Status**: ✅ Resolved
+**Q: How do I configure cloud storage?**
+A: 
+1. Copy `env.template` to `.env`
+2. Set `STORAGE_TYPE` to your preferred provider
+3. Configure the provider-specific credentials
+4. Install the required package: `pip install [provider-package]`
 
-**2. Chinese Characters Display as Garbled Text**
-- **Cause**: Missing Chinese font support in Docker image
-- **Solution**: Added Chinese fonts (Noto Sans CJK, WenQuanYi) and font injection to HTML
-- **Status**: ✅ Resolved
+**Q: Can I access generated images directly?**
+A: Yes! The service provides:
+- **Direct URLs**: Each image gets a shareable URL
+- **Date-based organization**: Images organized by YYYY/MM/DD structure
+- **Static file server**: Built-in HTTP server for image access
+- **list_images tool**: Query images by date and name filter
 
-**3. Mind Map Shows Only One Dot**
-- **Cause**: Incorrect parameter name in API call
-- **Correct Usage**: Use `markdown_content` (not `content`) as parameter name
-- **Example**:
-  ```json
-  {
-    "name": "create_mind_map",
-    "arguments": {
-      "markdown_content": "# Your Content Here",
-      "title": "Optional Title"
-    }
-  }
-  ```
-- **Status**: ✅ Resolved
+#### 🔧 Technical Questions | 技术问题
 
-### 📋 Version History
+**Q: What dependencies are required?**
+A: Core dependencies:
+- **Python 3.8+**: Main runtime
+- **Node.js 16+**: For markmap-cli
+- **Playwright**: Browser automation for PNG generation
+- **FastAPI**: HTTP transport
+- **MCP Protocol**: Core functionality
 
-- **v1.0.1**: Bug Fixes & Improvements
-  - 🐛 Fixed "Unexpected content type" error
-  - 🈶 Added Chinese font support for proper rendering
-  - 📚 Enhanced documentation with troubleshooting guide
-  - ✅ All known issues resolved
+**Q: How does the mind map generation work?**
+A: The process involves 4 steps:
+1. **Markdown Parsing**: Analyze input structure
+2. **HTML Generation**: Use markmap-cli to create interactive HTML
+3. **Browser Rendering**: Playwright captures HTML in headless browser
+4. **PNG Output**: High-quality image with intelligent viewport sizing
 
-- **v1.0.0**: Initial Release
-  - ✅ Markdown to PNG conversion
-  - ✅ Complete MCP protocol implementation  
-  - ✅ Docker one-click deployment
-  - ✅ Auto-installation scripts
-  - ✅ Multi-language support
-  - ✅ HTTP + Stdio transports
+**Q: Can I customize the generated mind maps?**
+A: Yes, through several options:
+- **Quality levels**: Choose from low to ultra quality
+- **Viewport sizing**: Automatic adjustment based on content complexity
+- **Title customization**: Set custom titles for your mind maps
+- **Storage location**: Choose where to save your images
+
+#### 🐳 Docker & Deployment | Docker部署
+
+**Q: Why is Docker recommended?**
+A: Docker provides:
+- **One-command setup**: No complex dependency management
+- **Consistent environment**: Same behavior across all systems
+- **Production-ready**: Built-in health checks and auto-restart
+- **Multi-service**: Separate containers for MCP and static files
+
+**Q: How do I configure Docker deployment?**
+A:
+1. Copy configuration: `cp env.template .env`
+2. **Critical**: Change `LOCAL_HOST` from `127.0.0.1` to your server IP
+3. Start services: `docker-compose up -d`
+4. Access at: `http://YOUR_SERVER_IP:8091/mcp`
+
+**Q: What Docker services are included?**
+A: Three services:
+- **mind-map-streamable**: Main MCP HTTP service
+- **mind-map-static**: Static file server for images
+- **mind-map-stdio**: Interactive command-line mode (optional)
+
+#### 🛠️ Troubleshooting | 故障排除
+
+**Q: Images show as broken links?**
+A: This usually means `LOCAL_HOST` is incorrectly configured:
+- ❌ Wrong: `LOCAL_HOST=127.0.0.1` (only works locally)
+- ✅ Correct: `LOCAL_HOST=YOUR_SERVER_IP` (accessible remotely)
+
+**Q: Mind map shows only one dot?**
+A: Check your API parameters:
+- Use `markdown_content` (not `content`) as the parameter name
+- Ensure your Markdown has proper hierarchical structure with `#` headers
+
+**Q: Getting "Unexpected content type" errors?**
+A: This was fixed in v1.0.1 - make sure you're using the latest version. All responses now return proper JSON format.
+
+**Q: Chinese characters appear as garbled text?**
+A: This was resolved in v1.0.1 with Chinese font support. If you're still seeing issues, try rebuilding your Docker image: `docker-compose up --build -d`
+
+
+
+
 
 ---
 
@@ -680,62 +762,144 @@ mind-map-mcp-server/
 
 ### ❓ 常见问题
 
+#### 🚀 入门问题 | Getting Started
+
 **Q: 不懂编程的人能用吗？**
-A: 当然可以！运行 `python start_server.py`，按照提示操作即可。
+A: 当然可以！我们提供多种简单易用的选择：
+- **最简单**: 运行 `python start_server.py` 并按提示操作
+- **Docker**: `docker-compose up -d` 一键部署
+- **uvx**: `uvx --from . python main.py streamable-http` 适用于现代Python环境
+
+**Q: 有哪些部署方式？**
+A: 我们提供3种主要部署方法：
+1. **Docker（🔥推荐）**: `docker-compose up -d` - 生产就绪，自动重启
+2. **uvx**: 现代Python工具执行 - 适合开发环境
+3. **本地安装**: 传统pip安装方法 - 完全控制
+
+**Q: 服务使用哪些端口？**
+A: 默认端口：
+- **8091**: 主MCP服务（流式HTTP）
+- **8090**: 静态文件服务器（图片访问）
+- **8000**: 内部FastMCP端口（仅Docker）
+- 所有端口都可通过`.env`文件配置
+
+#### 🖼️ 功能特性 | Features & Functionality
 
 **Q: 为什么输出PNG而不是HTML？**
-A: PNG图片可以轻松插入到文档、演示文稿中，方便在任何地方分享。
+A: PNG图片有几个优势：
+- 易于插入文档和演示文稿
+- 跨所有平台的通用兼容性
+- 查看时不依赖JavaScript或网页浏览器
+- 完美适合分享和归档
 
-**Q: Docker还是本地安装？**
-A: Docker更简单 - 只需一个命令即可启动，推荐初学者使用。
+**Q: 有哪些图片质量选项？**
+A: 四个质量级别：
+- **low（低）**: 800x600视口，1倍缩放 - 快速生成
+- **medium（中）**: 1000x700视口，1.5倍缩放 - 平衡选择
+- **high（高）**: 1200x800视口，2倍缩放 - 推荐默认
+- **ultra（超高）**: 2400x1600视口，3倍缩放 - 最高质量
 
-**Q: 支持中文吗？**
-A: 完全支持！包括中文、日文、阿拉伯语等所有Unicode字符。
+**Q: 支持中文和其他语言吗？**
+A: 完全支持！包括全面的Unicode支持：
+- 中文 - 带正确字体渲染
+- 日文（日本語）
+- 阿拉伯语（العربية）
+- 所有其他Unicode语言
+- 自动字体注入确保正确显示
 
-### 🛠️ 故障排除指南
+#### ☁️ 存储配置 | Storage & Configuration
 
-#### 常见问题和解决方案
+**Q: 支持哪些存储选项？**
+A: 多种存储提供者：
+- **本地**: 默认选项，文件保存在本地
+- **阿里云OSS**: 中国云存储
+- **华为OceanStor**: 企业云存储
+- **MinIO**: 自托管S3兼容存储
+- **Amazon S3**: AWS云存储
+- **Azure Blob**: 微软云存储
+- **Google Cloud存储**: Google云平台
 
-**1. "Unexpected content type" 错误**
-- **原因**：MCP客户端期望所有请求都返回JSON响应
-- **解决方案**：v1.0.1版本已修复 - 所有响应现在都返回正确的JSON格式
-- **状态**：✅ 已解决
+**Q: 如何配置云存储？**
+A: 
+1. 复制 `env.template` 到 `.env`
+2. 设置 `STORAGE_TYPE` 为您的首选提供者
+3. 配置提供者特定的凭据
+4. 安装所需包：`pip install [提供者包名]`
 
-**2. 中文字符显示为乱码**
-- **原因**：Docker镜像中缺少中文字体支持
-- **解决方案**：添加了中文字体（Noto Sans CJK、文泉驿）并在HTML中注入字体
-- **状态**：✅ 已解决
+**Q: 可以直接访问生成的图片吗？**
+A: 可以！服务提供：
+- **直接URL**: 每个图片都有可分享的URL
+- **按日期组织**: 图片按YYYY/MM/DD结构组织
+- **静态文件服务器**: 内置HTTP服务器用于图片访问
+- **list_images工具**: 按日期和名称过滤器查询图片
 
-**3. 思维导图只显示一个点**
-- **原因**：API调用中使用了错误的参数名
-- **正确用法**：使用`markdown_content`（不是`content`）作为参数名
-- **示例**：
-  ```json
-  {
-    "name": "create_mind_map",
-    "arguments": {
-      "markdown_content": "# 你的内容",
-      "title": "可选标题"
-    }
-  }
-  ```
-- **状态**：✅ 已解决
+#### 🔧 技术问题 | Technical Questions
 
-### 📋 版本历史
+**Q: 需要哪些依赖？**
+A: 核心依赖：
+- **Python 3.8+**: 主要运行时
+- **Node.js 16+**: 用于markmap-cli
+- **Playwright**: 用于PNG生成的浏览器自动化
+- **FastAPI**: HTTP传输
+- **MCP协议**: 核心功能
 
-- **v1.0.1**: Bug修复和改进
-  - 🐛 修复了"Unexpected content type"错误
-  - 🈶 添加了中文字体支持以确保正确渲染
-  - 📚 增强了文档，添加了故障排除指南
-  - ✅ 所有已知问题已解决
+**Q: 思维导图生成是如何工作的？**
+A: 过程包含4个步骤：
+1. **Markdown解析**: 分析输入结构
+2. **HTML生成**: 使用markmap-cli创建交互式HTML
+3. **浏览器渲染**: Playwright在无头浏览器中捕获HTML
+4. **PNG输出**: 高质量图片，智能视口调整
 
-- **v1.0.0**: 初始发布版本
-  - ✅ Markdown到PNG转换
-  - ✅ 完整的MCP协议实现  
-  - ✅ Docker一键部署
-  - ✅ 自动安装脚本
-  - ✅ 多语言支持
-  - ✅ HTTP + Stdio传输
+**Q: 可以自定义生成的思维导图吗？**
+A: 可以，通过多个选项：
+- **质量级别**: 从低到超高质量选择
+- **视口调整**: 根据内容复杂度自动调整
+- **标题自定义**: 为思维导图设置自定义标题
+- **存储位置**: 选择保存图片的位置
+
+#### 🐳 Docker部署 | Docker & Deployment
+
+**Q: 为什么推荐Docker？**
+A: Docker提供：
+- **一键设置**: 无需复杂的依赖管理
+- **一致环境**: 在所有系统上行为相同
+- **生产就绪**: 内置健康检查和自动重启
+- **多服务**: MCP和静态文件的独立容器
+
+**Q: 如何配置Docker部署？**
+A:
+1. 复制配置：`cp env.template .env`
+2. **关键**: 将`LOCAL_HOST`从`127.0.0.1`改为您的服务器IP
+3. 启动服务：`docker-compose up -d`
+4. 访问地址：`http://您的服务器IP:8091/mcp`
+
+**Q: 包含哪些Docker服务？**
+A: 三个服务：
+- **mind-map-streamable**: 主MCP HTTP服务
+- **mind-map-static**: 图片静态文件服务器
+- **mind-map-stdio**: 交互式命令行模式（可选）
+
+#### 🛠️ 故障排除 | Troubleshooting
+
+**Q: 图片显示为损坏链接？**
+A: 这通常意味着`LOCAL_HOST`配置不正确：
+- ❌ 错误：`LOCAL_HOST=127.0.0.1`（只能本地访问）
+- ✅ 正确：`LOCAL_HOST=您的服务器IP`（可远程访问）
+
+**Q: 思维导图只显示一个点？**
+A: 检查您的API参数：
+- 使用`markdown_content`（不是`content`）作为参数名
+- 确保您的Markdown具有带`#`标题的正确层次结构
+
+**Q: 出现"Unexpected content type"错误？**
+A: 这在v1.0.1版本中已修复 - 确保您使用的是最新版本。所有响应现在都返回正确的JSON格式。
+
+**Q: 中文字符显示为乱码？**
+A: 这在v1.0.1版本中已解决，添加了中文字体支持。如果仍有问题，请尝试重建Docker镜像：`docker-compose up --build -d`
+
+
+
+
 
 ## ⚠️ 注意事项 | Notes
 
