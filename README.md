@@ -87,14 +87,14 @@ A powerful MCP (Model Context Protocol) server that converts Markdown text into 
 > 
 > ### 🐳 **RECOMMENDED: Use Docker Deployment | 推荐：使用Docker部署**
 
-#### Method 1: Docker Deployment (Recommended)
+#### Method 1: Docker Deployment (🔥Recommended🔥)
 
 1. **Start the service**:
 ```bash
 docker-compose up -d
 ```
 
-2. **Access URLs**:
+2. **Access URLs**【🔥Change the follow localhost to your server's or hosts IP🔥】:
    - HTTP MCP Endpoint: `http://localhost:8091/mcp`
    - Service Status: `http://localhost:8091`
 
@@ -452,14 +452,14 @@ A: Yes! Full Unicode support including Chinese, Japanese, Arabic, etc.
 > 
 > ### 🐳 **推荐：使用Docker部署 | RECOMMENDED: Use Docker Deployment**
 
-#### 方式1：Docker部署（推荐）
+#### 方式1：Docker部署（🔥推荐🔥）
 
 1. **启动服务**：
 ```bash
 docker-compose up -d
 ```
 
-2. **访问地址**：
+2. **访问地址**【🔥将下面的localhost改为你宿主机服务器或者主机的IP地址🔥】：
    - HTTP MCP端点：`http://localhost:8091/mcp`
    - 服务状态：`http://localhost:8091`
 
